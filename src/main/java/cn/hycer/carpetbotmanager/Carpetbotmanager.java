@@ -1,5 +1,6 @@
 package cn.hycer.carpetbotmanager;
 
+import cn.hycer.carpetbotmanager.command.BotSpawner;
 import cn.hycer.carpetbotmanager.command.CarpetBotCommand;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
@@ -13,13 +14,11 @@ public class Carpetbotmanager implements ModInitializer {
 
     @Override
     public void onInitialize() {
-        // Register commands
         CarpetBotCommand.register();
 
-        // Auto-load bots and groups when server starts
         ServerLifecycleEvents.SERVER_STARTED.register(server -> {
             LOGGER.info("[CarpetBotManager] Auto-loading bots...");
-            CarpetBotCommand.autoLoadBots(server.getCommandSource());
+            BotSpawner.autoLoad(server.getCommandSource());
         });
     }
 }

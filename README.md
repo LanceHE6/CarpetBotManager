@@ -147,7 +147,13 @@ CarpetBotManager/
     ├── main/java/cn/hycer/carpetbotmanager/
     │   ├── Carpetbotmanager.java                 # 入口 — 注册指令 & 自动加载钩子
     │   ├── command/
-    │   │   └── CarpetBotCommand.java             # 全部 /cbot 指令定义与处理
+    │   │   ├── CarpetBotCommand.java             # 指令树注册（路由层）
+    │   │   ├── CommandExceptions.java            # 异常常量
+    │   │   ├── CommandSuggestions.java           # 补全建议提供器
+    │   │   ├── BotHandlers.java                  # Bot 增删查改 & help
+    │   │   ├── GroupHandlers.java                # 分组增删加载
+    │   │   ├── AutoLoadHandlers.java             # 自动加载管理
+    │   │   └── BotSpawner.java                   # Carpet 假人召唤 & 启动自动加载
     │   ├── config/
     │   │   └── CarpetBotConfig.java              # 配置文件读写 (JSON)
     │   ├── data/
