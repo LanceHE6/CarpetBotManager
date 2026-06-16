@@ -30,7 +30,8 @@ public final class BotHandlers {
         ServerCommandSource source = context.getSource();
 
         source.sendFeedback(
-                () -> Text.translatable("carpetbotmanager.command.help.header"), false);
+                () -> Text.translatableWithFallback("carpetbotmanager.command.help.header",
+                        "=== /cbot Commands ==="), false);
 
         String[] lines = {
                 "/cbot add <player> [description]",
@@ -96,7 +97,8 @@ public final class BotHandlers {
         dataManager.addBotPreset(preset);
 
         source.sendFeedback(
-                () -> Text.translatable("carpetbotmanager.command.add.success", botName),
+                () -> Text.translatableWithFallback("carpetbotmanager.command.add.success",
+                        "Bot preset '%s' saved successfully.", botName),
                 true);
 
         return 1;
@@ -114,7 +116,8 @@ public final class BotHandlers {
         dataManager.removeBotPreset(name);
 
         source.sendFeedback(
-                () -> Text.translatable("carpetbotmanager.command.remove.success", name),
+                () -> Text.translatableWithFallback("carpetbotmanager.command.remove.success",
+                        "Bot preset '%s' removed.", name),
                 true);
 
         return 1;
@@ -130,7 +133,8 @@ public final class BotHandlers {
         BotSpawner.spawn(source, preset);
 
         source.sendFeedback(
-                () -> Text.translatable("carpetbotmanager.command.load.success", name),
+                () -> Text.translatableWithFallback("carpetbotmanager.command.load.success",
+                        "Bot '%s' spawned successfully.", name),
                 true);
 
         return 1;
@@ -144,14 +148,17 @@ public final class BotHandlers {
         Collection<BotGroup> groups = dataManager.getAllBotGroups();
 
         source.sendFeedback(
-                () -> Text.translatable("carpetbotmanager.command.list.header"), false);
+                () -> Text.translatableWithFallback("carpetbotmanager.command.list.header",
+                        "=== Carpet Bot Manager ==="), false);
 
         if (bots.isEmpty()) {
             source.sendFeedback(
-                    () -> Text.translatable("carpetbotmanager.command.list.no_bots"), false);
+                    () -> Text.translatableWithFallback("carpetbotmanager.command.list.no_bots",
+                            "No saved bot presets."), false);
         } else {
             source.sendFeedback(
-                    () -> Text.translatable("carpetbotmanager.command.list.bots_title"), false);
+                    () -> Text.translatableWithFallback("carpetbotmanager.command.list.bots_title",
+                            "Saved Bots:"), false);
             for (BotPreset bot : bots) {
                 String desc = bot.getDescription() != null && !bot.getDescription().isEmpty()
                         ? " - " + bot.getDescription() : "";
@@ -164,10 +171,12 @@ public final class BotHandlers {
 
         if (groups.isEmpty()) {
             source.sendFeedback(
-                    () -> Text.translatable("carpetbotmanager.command.list.no_groups"), false);
+                    () -> Text.translatableWithFallback("carpetbotmanager.command.list.no_groups",
+                            "No saved bot groups."), false);
         } else {
             source.sendFeedback(
-                    () -> Text.translatable("carpetbotmanager.command.list.groups_title"), false);
+                    () -> Text.translatableWithFallback("carpetbotmanager.command.list.groups_title",
+                            "Saved Groups:"), false);
             for (BotGroup group : groups) {
                 String desc = group.getDescription() != null && !group.getDescription().isEmpty()
                         ? " - " + group.getDescription() : "";

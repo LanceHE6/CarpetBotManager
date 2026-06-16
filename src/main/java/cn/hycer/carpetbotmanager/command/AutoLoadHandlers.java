@@ -37,7 +37,8 @@ public final class AutoLoadHandlers {
         config.save();
 
         source.sendFeedback(
-                () -> Text.translatable("carpetbotmanager.command.autoload.add.success", name),
+                () -> Text.translatableWithFallback("carpetbotmanager.command.autoload.add.success",
+                        "Bot '%s' added to auto-load list.", name),
                 true);
         return 1;
     }
@@ -54,7 +55,8 @@ public final class AutoLoadHandlers {
         config.save();
 
         source.sendFeedback(
-                () -> Text.translatable("carpetbotmanager.command.autoload.remove.success", name),
+                () -> Text.translatableWithFallback("carpetbotmanager.command.autoload.remove.success",
+                        "Bot '%s' removed from auto-load list.", name),
                 true);
         return 1;
     }
@@ -64,15 +66,18 @@ public final class AutoLoadHandlers {
         CarpetBotConfig config = CarpetBotConfig.getInstance();
 
         source.sendFeedback(
-                () -> Text.translatable("carpetbotmanager.command.autoload.list.header"), false);
+                () -> Text.translatableWithFallback("carpetbotmanager.command.autoload.list.header",
+                        "=== Auto-load Settings ==="), false);
 
         java.util.List<String> bots = config.getAutoLoadBots();
         if (bots.isEmpty()) {
             source.sendFeedback(
-                    () -> Text.translatable("carpetbotmanager.command.autoload.list.no_bots"), false);
+                    () -> Text.translatableWithFallback("carpetbotmanager.command.autoload.list.no_bots",
+                            "No bots in auto-load list."), false);
         } else {
             source.sendFeedback(
-                    () -> Text.translatable("carpetbotmanager.command.autoload.list.bots_title"), false);
+                    () -> Text.translatableWithFallback("carpetbotmanager.command.autoload.list.bots_title",
+                            "Auto-load Bots:"), false);
             for (String bot : bots) {
                 source.sendFeedback(() -> Text.literal("  - " + bot), false);
             }
@@ -81,10 +86,12 @@ public final class AutoLoadHandlers {
         java.util.List<String> groups = config.getAutoLoadGroups();
         if (groups.isEmpty()) {
             source.sendFeedback(
-                    () -> Text.translatable("carpetbotmanager.command.autoload.list.no_groups"), false);
+                    () -> Text.translatableWithFallback("carpetbotmanager.command.autoload.list.no_groups",
+                            "No groups in auto-load list."), false);
         } else {
             source.sendFeedback(
-                    () -> Text.translatable("carpetbotmanager.command.autoload.list.groups_title"), false);
+                    () -> Text.translatableWithFallback("carpetbotmanager.command.autoload.list.groups_title",
+                            "Auto-load Groups:"), false);
             for (String group : groups) {
                 source.sendFeedback(() -> Text.literal("  - " + group), false);
             }
@@ -113,7 +120,8 @@ public final class AutoLoadHandlers {
         config.save();
 
         source.sendFeedback(
-                () -> Text.translatable("carpetbotmanager.command.group.autoload.add.success", groupName),
+                () -> Text.translatableWithFallback("carpetbotmanager.command.group.autoload.add.success",
+                        "Group '%s' added to auto-load list.", groupName),
                 true);
         return 1;
     }
@@ -130,7 +138,8 @@ public final class AutoLoadHandlers {
         config.save();
 
         source.sendFeedback(
-                () -> Text.translatable("carpetbotmanager.command.group.autoload.remove.success", groupName),
+                () -> Text.translatableWithFallback("carpetbotmanager.command.group.autoload.remove.success",
+                        "Group '%s' removed from auto-load list.", groupName),
                 true);
         return 1;
     }

@@ -53,12 +53,14 @@ public final class GroupHandlers {
         dataManager.addBotGroup(group);
 
         source.sendFeedback(
-                () -> Text.translatable("carpetbotmanager.command.group.add.success", groupName, validBots.size()),
+                () -> Text.translatableWithFallback("carpetbotmanager.command.group.add.success",
+                        "Group '%s' created with %d bot(s).", groupName, validBots.size()),
                 true);
 
         if (!notFound.isEmpty()) {
             source.sendFeedback(
-                    () -> Text.translatable("carpetbotmanager.command.group.add.partial",
+                    () -> Text.translatableWithFallback("carpetbotmanager.command.group.add.partial",
+                            "Warning: Some bots were not found and skipped: %s",
                             String.join(", ", notFound)),
                     true);
         }
@@ -79,7 +81,8 @@ public final class GroupHandlers {
         dataManager.removeBotGroup(groupName);
 
         source.sendFeedback(
-                () -> Text.translatable("carpetbotmanager.command.group.remove.success", groupName),
+                () -> Text.translatableWithFallback("carpetbotmanager.command.group.remove.success",
+                        "Group '%s' removed.", groupName),
                 true);
 
         return 1;
@@ -105,14 +108,15 @@ public final class GroupHandlers {
                 } catch (Exception e) {
                     failed++;
                     source.sendFeedback(
-                            () -> Text.translatable("carpetbotmanager.command.group.load.failed_item",
-                                    botName, e.getMessage()),
+                            () -> Text.translatableWithFallback("carpetbotmanager.command.group.load.failed_item",
+                                    "Failed to load bot '%s': %s", botName, e.getMessage()),
                             true);
                 }
             } else {
                 failed++;
                 source.sendFeedback(
-                        () -> Text.translatable("carpetbotmanager.error.bot_not_found_item", botName),
+                        () -> Text.translatableWithFallback("carpetbotmanager.error.bot_not_found_item",
+                                "Bot '%s' not found in saved presets.", botName),
                         true);
             }
         }
@@ -120,7 +124,8 @@ public final class GroupHandlers {
         final int finalLoaded = loaded;
         final int finalFailed = failed;
         source.sendFeedback(
-                () -> Text.translatable("carpetbotmanager.command.group.load.success",
+                () -> Text.translatableWithFallback("carpetbotmanager.command.group.load.success",
+                        "Group '%s' loaded: %d succeeded, %d failed.",
                         groupName, finalLoaded, finalFailed),
                 true);
 
