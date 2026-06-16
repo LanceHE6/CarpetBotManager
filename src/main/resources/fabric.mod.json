@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "id": "carpetbotmanager",
+  "version": "${version}",
+  "name": "CarpetBotManager",
+  "description": "A Fabric mod for managing Carpet mod fake players (bots) with commands, groups, and auto-loading.",
+  "authors": ["Hycer"],
+  "contact": {
+    "homepage": "https://github.com/Hycer/CarpetBotManager"
+  },
+  "license": "MIT",
+  "icon": "assets/carpetbotmanager/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "fabric-datagen": [
+      "cn.hycer.carpetbotmanager.client.CarpetbotmanagerDataGenerator"
+    ],
+    "client": [
+      "cn.hycer.carpetbotmanager.client.CarpetbotmanagerClient"
+    ],
+    "main": [
+      "cn.hycer.carpetbotmanager.Carpetbotmanager"
+    ]
+  },
+  "mixins": [
+    "carpetbotmanager.mixins.json",
+    {
+      "config": "carpetbotmanager.client.mixins.json",
+      "environment": "client"
+    }
+  ],
+  "depends": {
+    "fabricloader": ">=${loader_version}",
+    "fabric-api": "*",
+    "minecraft": "${minecraft_version}"
+  }
+}

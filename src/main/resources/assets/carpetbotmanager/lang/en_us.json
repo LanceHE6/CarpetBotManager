@@ -1,0 +1,44 @@
+{
+  "carpetbotmanager.error.not_bot_prefix": "Player name must start with the configured bot prefix to be registered as a bot.",
+  "carpetbotmanager.error.bot_not_found": "Bot preset not found.",
+  "carpetbotmanager.error.bot_already_exists": "A bot preset with this name already exists.",
+  "carpetbotmanager.error.group_not_found": "Bot group not found.",
+  "carpetbotmanager.error.group_already_exists": "A bot group with this name already exists.",
+  "carpetbotmanager.error.bots_not_found_for_group": "None of the specified bots were found. Add bot presets first.",
+  "carpetbotmanager.error.bot_not_found_item": "Bot '%s' not found in saved presets.",
+  "carpetbotmanager.error.already_in_autoload": "This bot is already in the auto-load list.",
+  "carpetbotmanager.error.not_in_autoload": "This bot is not in the auto-load list.",
+  "carpetbotmanager.error.group_already_in_autoload": "This group is already in the auto-load list.",
+  "carpetbotmanager.error.group_not_in_autoload": "This group is not in the auto-load list.",
+
+  "carpetbotmanager.command.help.header": "=== /cbot Commands ===",
+
+  "carpetbotmanager.command.add.success": "Bot preset '%s' saved successfully.",
+  "carpetbotmanager.command.remove.success": "Bot preset '%s' removed.",
+  "carpetbotmanager.command.load.success": "Bot '%s' spawned successfully.",
+
+  "carpetbotmanager.command.list.header": "=== Carpet Bot Manager ===",
+  "carpetbotmanager.command.list.no_bots": "No saved bot presets.",
+  "carpetbotmanager.command.list.bots_title": "Saved Bots:",
+  "carpetbotmanager.command.list.no_groups": "No saved bot groups.",
+  "carpetbotmanager.command.list.groups_title": "Saved Groups:",
+
+  "carpetbotmanager.command.group.add.success": "Group '%s' created with %d bot(s).",
+  "carpetbotmanager.command.group.add.partial": "Warning: Some bots were not found and skipped: %s",
+  "carpetbotmanager.command.group.remove.success": "Group '%s' removed.",
+  "carpetbotmanager.command.group.load.success": "Group '%s' loaded: %d succeeded, %d failed.",
+  "carpetbotmanager.command.group.load.failed_item": "Failed to load bot '%s': %s",
+
+  "carpetbotmanager.command.autoload.add.success": "Bot '%s' added to auto-load list.",
+  "carpetbotmanager.command.autoload.remove.success": "Bot '%s' removed from auto-load list.",
+  "carpetbotmanager.command.autoload.list.header": "=== Auto-load Settings ===",
+  "carpetbotmanager.command.autoload.list.no_bots": "No bots in auto-load list.",
+  "carpetbotmanager.command.autoload.list.bots_title": "Auto-load Bots:",
+  "carpetbotmanager.command.autoload.list.no_groups": "No groups in auto-load list.",
+  "carpetbotmanager.command.autoload.list.groups_title": "Auto-load Groups:",
+
+  "carpetbotmanager.command.group.autoload.add.success": "Group '%s' added to auto-load list.",
+  "carpetbotmanager.command.group.autoload.remove.success": "Group '%s' removed from auto-load list.",
+
+  "carpetbotmanager.autoload.complete": "Auto-loaded %d bot(s) and %d group(s)."
+}
