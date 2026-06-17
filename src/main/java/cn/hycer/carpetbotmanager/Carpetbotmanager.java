@@ -18,7 +18,7 @@ public class Carpetbotmanager implements ModInitializer {
 
         ServerLifecycleEvents.SERVER_STARTED.register(server -> {
             LOGGER.info("[CarpetBotManager] Auto-loading bots...");
-            BotSpawner.autoLoad(server.getCommandSource());
+            BotSpawner.autoLoad(server.createCommandSourceStack());
         });
     }
 }

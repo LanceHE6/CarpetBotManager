@@ -7,11 +7,11 @@ import cn.hycer.carpetbotmanager.model.BotPreset;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import net.minecraft.command.argument.EntityArgumentType;
-import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.Text;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.arguments.EntityArgument;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.phys.Vec3;
 
 import java.util.Collection;
 import java.util.Locale;
@@ -26,12 +26,12 @@ public final class BotHandlers {
 
     private BotHandlers() {}
 
-    static int showHelp(CommandContext<ServerCommandSource> context) {
-        ServerCommandSource source = context.getSource();
+    static int showHelp(CommandContext<CommandSourceStack> context) {
+        CommandSourceStack source = context.getSource();
 
-        source.sendFeedback(
-                () -> Text.translatableWithFallback("carpetbotmanager.command.help.header",
-                        "=== /cbot Commands ==="), false);
+        source.sendSystemMessage(
+                Component.translatableWithFallback("carpetbotmanager.command.help.header",
+                        "=== /cbot Commands ==="));
 
         String[] lines = {
                 "/cbot add <player> [description]",
@@ -50,15 +50,15 @@ public final class BotHandlers {
         };
 
         for (String line : lines) {
-            source.sendFeedback(() -> Text.literal("  " + line), false);
+            source.sendSystemMessage(Component.literal("  " + line));
         }
 
         return 1;
     }
 
-    static int addBot(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
-        ServerCommandSource source = context.getSource();
-        ServerPlayerEntity player = EntityArgumentType.getPlayer(context, "player");
+    static int addBot(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
+        CommandSourceStack source = context.getSource();
+        ServerPlayer player = EntityArgument.getPlayer(context, "player");
         String botName = player.getGameProfile().name();
         String prefix = CarpetBotConfig.getInstance().getBotNamePrefix();
 
@@ -79,16 +79,16 @@ public final class BotHandlers {
             description = "";
         }
 
-        Vec3d lookVec = player.getRotationVector();
+        Vec3 lookVec = player.getLookAngle();
         BotPreset preset = new BotPreset(
                 botName,
                 description,
-                player.getEntityWorld().getRegistryKey().getValue().toString(),
+                player.level().dimension().identifier().toString(),
                 player.getX(),
                 player.getY(),
                 player.getZ(),
-                player.getYaw(),
-                player.getPitch(),
+                player.getYRot(),
+                player.getXRot(),
                 player.getX() + lookVec.x,
                 player.getEyeY() + lookVec.y,
                 player.getZ() + lookVec.z
@@ -96,16 +96,15 @@ public final class BotHandlers {
 
         dataManager.addBotPreset(preset);
 
-        source.sendFeedback(
-                () -> Text.translatableWithFallback("carpetbotmanager.command.add.success",
-                        "Bot preset '%s' saved successfully.", botName),
-                true);
+        source.sendSystemMessage(
+                Component.translatableWithFallback("carpetbotmanager.command.add.success",
+                        "Bot preset '%s' saved successfully.", botName));
 
         return 1;
     }
 
-    static int removeBot(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
-        ServerCommandSource source = context.getSource();
+    static int removeBot(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
+        CommandSourceStack source = context.getSource();
         String name = StringArgumentType.getString(context, "name");
 
         BotDataManager dataManager = BotDataManager.getInstance();
@@ -115,16 +114,15 @@ public final class BotHandlers {
 
         dataManager.removeBotPreset(name);
 
-        source.sendFeedback(
-                () -> Text.translatableWithFallback("carpetbotmanager.command.remove.success",
-                        "Bot preset '%s' removed.", name),
-                true);
+        source.sendSystemMessage(
+                Component.translatableWithFallback("carpetbotmanager.command.remove.success",
+                        "Bot preset '%s' removed.", name));
 
         return 1;
     }
 
-    static int loadBot(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
-        ServerCommandSource source = context.getSource();
+    static int loadBot(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
+        CommandSourceStack source = context.getSource();
         String name = StringArgumentType.getString(context, "name");
 
         BotPreset preset = BotDataManager.getInstance().getBotPreset(name)
@@ -132,57 +130,56 @@ public final class BotHandlers {
 
         BotSpawner.spawn(source, preset);
 
-        source.sendFeedback(
-                () -> Text.translatableWithFallback("carpetbotmanager.command.load.success",
-                        "Bot '%s' spawned successfully.", name),
-                true);
+        source.sendSystemMessage(
+                Component.translatableWithFallback("carpetbotmanager.command.load.success",
+                        "Bot '%s' spawned successfully.", name));
 
         return 1;
     }
 
-    static int listBots(CommandContext<ServerCommandSource> context) {
-        ServerCommandSource source = context.getSource();
+    static int listBots(CommandContext<CommandSourceStack> context) {
+        CommandSourceStack source = context.getSource();
         BotDataManager dataManager = BotDataManager.getInstance();
 
         Collection<BotPreset> bots = dataManager.getAllBotPresets();
         Collection<BotGroup> groups = dataManager.getAllBotGroups();
 
-        source.sendFeedback(
-                () -> Text.translatableWithFallback("carpetbotmanager.command.list.header",
-                        "=== Carpet Bot Manager ==="), false);
+        source.sendSystemMessage(
+                Component.translatableWithFallback("carpetbotmanager.command.list.header",
+                        "=== Carpet Bot Manager ==="));
 
         if (bots.isEmpty()) {
-            source.sendFeedback(
-                    () -> Text.translatableWithFallback("carpetbotmanager.command.list.no_bots",
-                            "No saved bot presets."), false);
+            source.sendSystemMessage(
+                    Component.translatableWithFallback("carpetbotmanager.command.list.no_bots",
+                            "No saved bot presets."));
         } else {
-            source.sendFeedback(
-                    () -> Text.translatableWithFallback("carpetbotmanager.command.list.bots_title",
-                            "Saved Bots:"), false);
+            source.sendSystemMessage(
+                    Component.translatableWithFallback("carpetbotmanager.command.list.bots_title",
+                            "Saved Bots:"));
             for (BotPreset bot : bots) {
                 String desc = bot.getDescription() != null && !bot.getDescription().isEmpty()
                         ? " - " + bot.getDescription() : "";
-                source.sendFeedback(
-                        () -> Text.literal(String.format("  - %s%s (%.0f, %.0f, %.0f in %s)",
+                source.sendSystemMessage(
+                        Component.literal(String.format("  - %s%s (%.0f, %.0f, %.0f in %s)",
                                 bot.getName(), desc, bot.getX(), bot.getY(), bot.getZ(),
-                                bot.getDimension())), false);
+                                bot.getDimension())));
             }
         }
 
         if (groups.isEmpty()) {
-            source.sendFeedback(
-                    () -> Text.translatableWithFallback("carpetbotmanager.command.list.no_groups",
-                            "No saved bot groups."), false);
+            source.sendSystemMessage(
+                    Component.translatableWithFallback("carpetbotmanager.command.list.no_groups",
+                            "No saved bot groups."));
         } else {
-            source.sendFeedback(
-                    () -> Text.translatableWithFallback("carpetbotmanager.command.list.groups_title",
-                            "Saved Groups:"), false);
+            source.sendSystemMessage(
+                    Component.translatableWithFallback("carpetbotmanager.command.list.groups_title",
+                            "Saved Groups:"));
             for (BotGroup group : groups) {
                 String desc = group.getDescription() != null && !group.getDescription().isEmpty()
                         ? " - " + group.getDescription() : "";
-                source.sendFeedback(
-                        () -> Text.literal(String.format("  - %s%s [%s]",
-                                group.getName(), desc, String.join(", ", group.getBots()))), false);
+                source.sendSystemMessage(
+                        Component.literal(String.format("  - %s%s [%s]",
+                                group.getName(), desc, String.join(", ", group.getBots()))));
             }
         }
 

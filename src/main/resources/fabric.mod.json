@@ -12,22 +12,12 @@
   "icon": "assets/carpetbotmanager/icon.png",
   "environment": "*",
   "entrypoints": {
-    "fabric-datagen": [
-      "cn.hycer.carpetbotmanager.client.CarpetbotmanagerDataGenerator"
-    ],
-    "client": [
-      "cn.hycer.carpetbotmanager.client.CarpetbotmanagerClient"
-    ],
     "main": [
       "cn.hycer.carpetbotmanager.Carpetbotmanager"
     ]
   },
   "mixins": [
-    "carpetbotmanager.mixins.json",
-    {
-      "config": "carpetbotmanager.client.mixins.json",
-      "environment": "client"
-    }
+    "carpetbotmanager.mixins.json"
   ],
   "depends": {
     "fabricloader": ">=0.19.3",

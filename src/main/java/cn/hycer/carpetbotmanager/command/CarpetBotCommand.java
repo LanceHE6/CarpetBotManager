@@ -4,14 +4,14 @@ import cn.hycer.carpetbotmanager.config.CarpetBotConfig;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
-import net.minecraft.command.argument.EntityArgumentType;
-import net.minecraft.command.permission.PermissionCheck;
-import net.minecraft.server.command.CommandManager;
-import net.minecraft.server.command.ServerCommandSource;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.commands.arguments.EntityArgument;
+import net.minecraft.server.permissions.PermissionCheck;
 
 import static cn.hycer.carpetbotmanager.command.CommandSuggestions.*;
-import static net.minecraft.server.command.CommandManager.argument;
-import static net.minecraft.server.command.CommandManager.literal;
+import static net.minecraft.commands.Commands.argument;
+import static net.minecraft.commands.Commands.literal;
 
 /**
  * Root command registration for {@code /cbot}.
@@ -29,23 +29,23 @@ public final class CarpetBotCommand {
     private static PermissionCheck requiredPermission() {
         int level = CarpetBotConfig.getInstance().getPermissionLevel();
         return switch (level) {
-            case 0 -> CommandManager.ALWAYS_PASS_CHECK;
-            case 1 -> CommandManager.MODERATORS_CHECK;
-            case 2 -> CommandManager.GAMEMASTERS_CHECK;
-            case 3 -> CommandManager.ADMINS_CHECK;
-            case 4 -> CommandManager.OWNERS_CHECK;
-            default -> CommandManager.GAMEMASTERS_CHECK;
+            case 0 -> Commands.LEVEL_ALL;
+            case 1 -> Commands.LEVEL_MODERATORS;
+            case 2 -> Commands.LEVEL_GAMEMASTERS;
+            case 3 -> Commands.LEVEL_ADMINS;
+            case 4 -> Commands.LEVEL_OWNERS;
+            default -> Commands.LEVEL_GAMEMASTERS;
         };
     }
 
-    private static void buildTree(CommandDispatcher<ServerCommandSource> dispatcher) {
+    private static void buildTree(CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(
             literal("cbot")
-                .requires(CommandManager.requirePermissionLevel(requiredPermission()))
+                .requires(Commands.hasPermission(requiredPermission()))
 
                 // --- bot ---
                 .then(literal("add")
-                    .then(argument("player", EntityArgumentType.player())
+                    .then(argument("player", EntityArgument.player())
                         .executes(BotHandlers::addBot)
                         .then(argument("description", StringArgumentType.greedyString())
                             .executes(BotHandlers::addBot))))

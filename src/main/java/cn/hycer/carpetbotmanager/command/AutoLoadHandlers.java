@@ -5,8 +5,8 @@ import cn.hycer.carpetbotmanager.data.BotDataManager;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.text.Text;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.network.chat.Component;
 
 import static cn.hycer.carpetbotmanager.command.CommandExceptions.*;
 
@@ -19,8 +19,8 @@ public final class AutoLoadHandlers {
 
     // --- Bot auto-load ---
 
-    static int addAutoLoadBot(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
-        ServerCommandSource source = context.getSource();
+    static int addAutoLoadBot(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
+        CommandSourceStack source = context.getSource();
         String name = StringArgumentType.getString(context, "name");
 
         BotDataManager dataManager = BotDataManager.getInstance();
@@ -36,15 +36,14 @@ public final class AutoLoadHandlers {
         config.getAutoLoadBots().add(name);
         config.save();
 
-        source.sendFeedback(
-                () -> Text.translatableWithFallback("carpetbotmanager.command.autoload.add.success",
-                        "Bot '%s' added to auto-load list.", name),
-                true);
+        source.sendSystemMessage(
+                Component.translatableWithFallback("carpetbotmanager.command.autoload.add.success",
+                        "Bot '%s' added to auto-load list.", name));
         return 1;
     }
 
-    static int removeAutoLoadBot(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
-        ServerCommandSource source = context.getSource();
+    static int removeAutoLoadBot(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
+        CommandSourceStack source = context.getSource();
         String name = StringArgumentType.getString(context, "name");
 
         CarpetBotConfig config = CarpetBotConfig.getInstance();
@@ -54,46 +53,45 @@ public final class AutoLoadHandlers {
 
         config.save();
 
-        source.sendFeedback(
-                () -> Text.translatableWithFallback("carpetbotmanager.command.autoload.remove.success",
-                        "Bot '%s' removed from auto-load list.", name),
-                true);
+        source.sendSystemMessage(
+                Component.translatableWithFallback("carpetbotmanager.command.autoload.remove.success",
+                        "Bot '%s' removed from auto-load list.", name));
         return 1;
     }
 
-    static int listAutoLoad(CommandContext<ServerCommandSource> context) {
-        ServerCommandSource source = context.getSource();
+    static int listAutoLoad(CommandContext<CommandSourceStack> context) {
+        CommandSourceStack source = context.getSource();
         CarpetBotConfig config = CarpetBotConfig.getInstance();
 
-        source.sendFeedback(
-                () -> Text.translatableWithFallback("carpetbotmanager.command.autoload.list.header",
-                        "=== Auto-load Settings ==="), false);
+        source.sendSystemMessage(
+                Component.translatableWithFallback("carpetbotmanager.command.autoload.list.header",
+                        "=== Auto-load Settings ==="));
 
         java.util.List<String> bots = config.getAutoLoadBots();
         if (bots.isEmpty()) {
-            source.sendFeedback(
-                    () -> Text.translatableWithFallback("carpetbotmanager.command.autoload.list.no_bots",
-                            "No bots in auto-load list."), false);
+            source.sendSystemMessage(
+                    Component.translatableWithFallback("carpetbotmanager.command.autoload.list.no_bots",
+                            "No bots in auto-load list."));
         } else {
-            source.sendFeedback(
-                    () -> Text.translatableWithFallback("carpetbotmanager.command.autoload.list.bots_title",
-                            "Auto-load Bots:"), false);
+            source.sendSystemMessage(
+                    Component.translatableWithFallback("carpetbotmanager.command.autoload.list.bots_title",
+                            "Auto-load Bots:"));
             for (String bot : bots) {
-                source.sendFeedback(() -> Text.literal("  - " + bot), false);
+                source.sendSystemMessage(Component.literal("  - " + bot));
             }
         }
 
         java.util.List<String> groups = config.getAutoLoadGroups();
         if (groups.isEmpty()) {
-            source.sendFeedback(
-                    () -> Text.translatableWithFallback("carpetbotmanager.command.autoload.list.no_groups",
-                            "No groups in auto-load list."), false);
+            source.sendSystemMessage(
+                    Component.translatableWithFallback("carpetbotmanager.command.autoload.list.no_groups",
+                            "No groups in auto-load list."));
         } else {
-            source.sendFeedback(
-                    () -> Text.translatableWithFallback("carpetbotmanager.command.autoload.list.groups_title",
-                            "Auto-load Groups:"), false);
+            source.sendSystemMessage(
+                    Component.translatableWithFallback("carpetbotmanager.command.autoload.list.groups_title",
+                            "Auto-load Groups:"));
             for (String group : groups) {
-                source.sendFeedback(() -> Text.literal("  - " + group), false);
+                source.sendSystemMessage(Component.literal("  - " + group));
             }
         }
 
@@ -102,8 +100,8 @@ public final class AutoLoadHandlers {
 
     // --- Group auto-load ---
 
-    static int addAutoLoadGroup(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
-        ServerCommandSource source = context.getSource();
+    static int addAutoLoadGroup(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
+        CommandSourceStack source = context.getSource();
         String groupName = StringArgumentType.getString(context, "groupName");
 
         BotDataManager dataManager = BotDataManager.getInstance();
@@ -119,15 +117,14 @@ public final class AutoLoadHandlers {
         config.getAutoLoadGroups().add(groupName);
         config.save();
 
-        source.sendFeedback(
-                () -> Text.translatableWithFallback("carpetbotmanager.command.group.autoload.add.success",
-                        "Group '%s' added to auto-load list.", groupName),
-                true);
+        source.sendSystemMessage(
+                Component.translatableWithFallback("carpetbotmanager.command.group.autoload.add.success",
+                        "Group '%s' added to auto-load list.", groupName));
         return 1;
     }
 
-    static int removeAutoLoadGroup(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
-        ServerCommandSource source = context.getSource();
+    static int removeAutoLoadGroup(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
+        CommandSourceStack source = context.getSource();
         String groupName = StringArgumentType.getString(context, "groupName");
 
         CarpetBotConfig config = CarpetBotConfig.getInstance();
@@ -137,10 +134,9 @@ public final class AutoLoadHandlers {
 
         config.save();
 
-        source.sendFeedback(
-                () -> Text.translatableWithFallback("carpetbotmanager.command.group.autoload.remove.success",
-                        "Group '%s' removed from auto-load list.", groupName),
-                true);
+        source.sendSystemMessage(
+                Component.translatableWithFallback("carpetbotmanager.command.group.autoload.remove.success",
+                        "Group '%s' removed from auto-load list.", groupName));
         return 1;
     }
 }

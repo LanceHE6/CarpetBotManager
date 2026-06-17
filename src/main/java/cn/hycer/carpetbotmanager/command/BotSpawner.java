@@ -4,7 +4,7 @@ import cn.hycer.carpetbotmanager.config.CarpetBotConfig;
 import cn.hycer.carpetbotmanager.data.BotDataManager;
 import cn.hycer.carpetbotmanager.model.BotGroup;
 import cn.hycer.carpetbotmanager.model.BotPreset;
-import net.minecraft.server.command.ServerCommandSource;
+import net.minecraft.commands.CommandSourceStack;
 
 import java.util.Locale;
 
@@ -19,7 +19,7 @@ public final class BotSpawner {
     /**
      * Spawns a single bot via the Carpet {@code /player} command.
      */
-    public static void spawn(ServerCommandSource source, BotPreset preset) {
+    public static void spawn(CommandSourceStack source, BotPreset preset) {
         String command = String.format(Locale.ROOT,
                 "player %s spawn at %.2f %.2f %.2f facing %.2f %.2f in %s",
                 preset.getName(),
@@ -30,15 +30,15 @@ public final class BotSpawner {
                 preset.getPitch(),
                 preset.getDimension());
 
-        source.getServer().getCommandManager().parseAndExecute(
-                source.getServer().getCommandSource(), command);
+        source.getServer().getCommands().performPrefixedCommand(
+                source.getServer().createCommandSourceStack(), command);
     }
 
     /**
      * Called on server start. Loads all bots and groups listed in the
      * auto-load config.
      */
-    public static void autoLoad(ServerCommandSource source) {
+    public static void autoLoad(CommandSourceStack source) {
         CarpetBotConfig config = CarpetBotConfig.getInstance();
         BotDataManager dataManager = BotDataManager.getInstance();
 

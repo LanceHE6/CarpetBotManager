@@ -6,8 +6,8 @@ import cn.hycer.carpetbotmanager.model.BotPreset;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.text.Text;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.network.chat.Component;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,8 +21,8 @@ public final class GroupHandlers {
 
     private GroupHandlers() {}
 
-    static int addGroup(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
-        ServerCommandSource source = context.getSource();
+    static int addGroup(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
+        CommandSourceStack source = context.getSource();
         String groupName = StringArgumentType.getString(context, "groupName");
         String description = StringArgumentType.getString(context, "description");
         String botsStr = StringArgumentType.getString(context, "bots");
@@ -52,24 +52,22 @@ public final class GroupHandlers {
         BotGroup group = new BotGroup(groupName, description, validBots);
         dataManager.addBotGroup(group);
 
-        source.sendFeedback(
-                () -> Text.translatableWithFallback("carpetbotmanager.command.group.add.success",
-                        "Group '%s' created with %d bot(s).", groupName, validBots.size()),
-                true);
+        source.sendSystemMessage(
+                Component.translatableWithFallback("carpetbotmanager.command.group.add.success",
+                        "Group '%s' created with %d bot(s).", groupName, validBots.size()));
 
         if (!notFound.isEmpty()) {
-            source.sendFeedback(
-                    () -> Text.translatableWithFallback("carpetbotmanager.command.group.add.partial",
+            source.sendSystemMessage(
+                    Component.translatableWithFallback("carpetbotmanager.command.group.add.partial",
                             "Warning: Some bots were not found and skipped: %s",
-                            String.join(", ", notFound)),
-                    true);
+                            String.join(", ", notFound)));
         }
 
         return 1;
     }
 
-    static int removeGroup(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
-        ServerCommandSource source = context.getSource();
+    static int removeGroup(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
+        CommandSourceStack source = context.getSource();
         String groupName = StringArgumentType.getString(context, "groupName");
 
         BotDataManager dataManager = BotDataManager.getInstance();
@@ -80,16 +78,15 @@ public final class GroupHandlers {
 
         dataManager.removeBotGroup(groupName);
 
-        source.sendFeedback(
-                () -> Text.translatableWithFallback("carpetbotmanager.command.group.remove.success",
-                        "Group '%s' removed.", groupName),
-                true);
+        source.sendSystemMessage(
+                Component.translatableWithFallback("carpetbotmanager.command.group.remove.success",
+                        "Group '%s' removed.", groupName));
 
         return 1;
     }
 
-    static int loadGroup(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
-        ServerCommandSource source = context.getSource();
+    static int loadGroup(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
+        CommandSourceStack source = context.getSource();
         String groupName = StringArgumentType.getString(context, "groupName");
 
         BotDataManager dataManager = BotDataManager.getInstance();
@@ -107,27 +104,24 @@ public final class GroupHandlers {
                     loaded++;
                 } catch (Exception e) {
                     failed++;
-                    source.sendFeedback(
-                            () -> Text.translatableWithFallback("carpetbotmanager.command.group.load.failed_item",
-                                    "Failed to load bot '%s': %s", botName, e.getMessage()),
-                            true);
+                    source.sendSystemMessage(
+                            Component.translatableWithFallback("carpetbotmanager.command.group.load.failed_item",
+                                    "Failed to load bot '%s': %s", botName, e.getMessage()));
                 }
             } else {
                 failed++;
-                source.sendFeedback(
-                        () -> Text.translatableWithFallback("carpetbotmanager.error.bot_not_found_item",
-                                "Bot '%s' not found in saved presets.", botName),
-                        true);
+                source.sendSystemMessage(
+                        Component.translatableWithFallback("carpetbotmanager.error.bot_not_found_item",
+                                "Bot '%s' not found in saved presets.", botName));
             }
         }
 
         final int finalLoaded = loaded;
         final int finalFailed = failed;
-        source.sendFeedback(
-                () -> Text.translatableWithFallback("carpetbotmanager.command.group.load.success",
+        source.sendSystemMessage(
+                Component.translatableWithFallback("carpetbotmanager.command.group.load.success",
                         "Group '%s' loaded: %d succeeded, %d failed.",
-                        groupName, finalLoaded, finalFailed),
-                true);
+                        groupName, finalLoaded, finalFailed));
 
         return 1;
     }
