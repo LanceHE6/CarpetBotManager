@@ -30,7 +30,6 @@
 | 📦 **分组管理** | 将多个 Bot 组织为 Group，支持批量加载 |
 | ⏰ **自动加载** | 服务器启动后自动部署指定的 Bot / Group |
 | 🔧 **灵活配置** | 可配置指令权限等级、Bot 名称前缀等 |
-| 🌍 **多语言** | 内置英文（en_us）与中文（zh_cn）翻译 |
 
 ---
 
@@ -80,6 +79,11 @@
 ├── load <name>                         # 召唤 Bot
 ├── list                                # 查看所有 Bot 和 Group
 ├── help                                # 显示全部指令用法
+├── ui                                  # 打开聊天交互菜单
+│   ├── bots                            # UI: Bot 列表
+│   ├── groups                          # UI: 分组列表
+│   ├── autoload                        # UI: 自动加载管理
+│   └── add                             # UI: 新增 Bot 指引
 │
 ├── autoload
 │   ├── add <name>                      # Bot 加入自动加载列表
@@ -184,8 +188,7 @@ CarpetBotManager/
 - [x] 自动加载指令管理（`/cbot autoload`）
 - [x] 指令权限控制（可配置等级 0-4）
 - [x] Bot 名称前缀校验（默认 `bot_`）
-- [x] 国际化（中文 / 英文）
-- [ ] 加入 GUI 管理界面
+- [x] 聊天交互界面（`/cbot ui` 可点击菜单）
 - [ ] 支持更多 Carpet 假人参数（gamemode 等）
 - [ ] 通过指令修改已有 Bot 描述
 - [ ] 热重载配置
