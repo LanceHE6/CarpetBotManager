@@ -7,34 +7,34 @@ public final class CommandExceptions {
 
     public static final SimpleCommandExceptionType NOT_BOT_PREFIX =
             new SimpleCommandExceptionType(Component.translatableWithFallback(
-                    "carpetbotmanager.error.not_bot_prefix", "Player name must start with 'bot_' prefix."));
+                    "carpetbotmanager.error.not_bot_prefix", "玩家名必须以配置的 bot 前缀开头才能注册为 bot。"));
     public static final SimpleCommandExceptionType BOT_NOT_FOUND =
             new SimpleCommandExceptionType(Component.translatableWithFallback(
-                    "carpetbotmanager.error.bot_not_found", "Bot preset not found."));
+                    "carpetbotmanager.error.bot_not_found", "未找到该 bot 预设。"));
     public static final SimpleCommandExceptionType BOT_ALREADY_EXISTS =
             new SimpleCommandExceptionType(Component.translatableWithFallback(
-                    "carpetbotmanager.error.bot_already_exists", "Bot preset already exists."));
+                    "carpetbotmanager.error.bot_already_exists", "该名称的 bot 预设已存在。"));
     public static final SimpleCommandExceptionType GROUP_NOT_FOUND =
             new SimpleCommandExceptionType(Component.translatableWithFallback(
-                    "carpetbotmanager.error.group_not_found", "Group not found."));
+                    "carpetbotmanager.error.group_not_found", "未找到该 bot 组。"));
     public static final SimpleCommandExceptionType GROUP_ALREADY_EXISTS =
             new SimpleCommandExceptionType(Component.translatableWithFallback(
-                    "carpetbotmanager.error.group_already_exists", "Group already exists."));
+                    "carpetbotmanager.error.group_already_exists", "该名称的 bot 组已存在。"));
     public static final SimpleCommandExceptionType BOTS_NOT_FOUND_FOR_GROUP =
             new SimpleCommandExceptionType(Component.translatableWithFallback(
-                    "carpetbotmanager.error.bots_not_found_for_group", "No valid bots for group."));
+                    "carpetbotmanager.error.bots_not_found_for_group", "未找到任何指定的 bot。请先添加 bot 预设。"));
     public static final SimpleCommandExceptionType ALREADY_IN_AUTOLOAD =
             new SimpleCommandExceptionType(Component.translatableWithFallback(
-                    "carpetbotmanager.error.already_in_autoload", "Already in auto-load list."));
+                    "carpetbotmanager.error.already_in_autoload", "该 bot 已在自动加载列表中。"));
     public static final SimpleCommandExceptionType NOT_IN_AUTOLOAD =
             new SimpleCommandExceptionType(Component.translatableWithFallback(
-                    "carpetbotmanager.error.not_in_autoload", "Not in auto-load list."));
+                    "carpetbotmanager.error.not_in_autoload", "该 bot 不在自动加载列表中。"));
     public static final SimpleCommandExceptionType GROUP_ALREADY_IN_AUTOLOAD =
             new SimpleCommandExceptionType(Component.translatableWithFallback(
-                    "carpetbotmanager.error.group_already_in_autoload", "Group already in auto-load list."));
+                    "carpetbotmanager.error.group_already_in_autoload", "该组已在自动加载列表中。"));
     public static final SimpleCommandExceptionType GROUP_NOT_IN_AUTOLOAD =
             new SimpleCommandExceptionType(Component.translatableWithFallback(
-                    "carpetbotmanager.error.group_not_in_autoload", "Group not in auto-load list."));
+                    "carpetbotmanager.error.group_not_in_autoload", "该组不在自动加载列表中。"));
 
     private CommandExceptions() {}
 }

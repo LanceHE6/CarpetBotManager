@@ -21,7 +21,7 @@ public final class AutoLoadHandlers {
         if (cfg.getAutoLoadBots().contains(name)) throw ALREADY_IN_AUTOLOAD.create();
         cfg.getAutoLoadBots().add(name); cfg.save();
         src.sendSystemMessage(Component.translatableWithFallback(
-                "carpetbotmanager.command.autoload.add.success", "Bot '%s' added to auto-load.", name));
+                "carpetbotmanager.command.autoload.add.success", "已将 bot '%s' 添加到自动加载列表。", name));
         return 1;
     }
 
@@ -32,7 +32,7 @@ public final class AutoLoadHandlers {
         if (!cfg.getAutoLoadBots().remove(name)) throw NOT_IN_AUTOLOAD.create();
         cfg.save();
         src.sendSystemMessage(Component.translatableWithFallback(
-                "carpetbotmanager.command.autoload.remove.success", "Bot '%s' removed from auto-load.", name));
+                "carpetbotmanager.command.autoload.remove.success", "已将 bot '%s' 从自动加载列表中移除。", name));
         return 1;
     }
 
@@ -40,18 +40,18 @@ public final class AutoLoadHandlers {
         CommandSourceStack src = ctx.getSource();
         CarpetBotConfig cfg = CarpetBotConfig.getInstance();
         src.sendSystemMessage(Component.translatableWithFallback(
-                "carpetbotmanager.command.autoload.list.header", "=== Auto-load Settings ==="));
+                "carpetbotmanager.command.autoload.list.header", "=== 自动加载设置 ==="));
         java.util.List<String> bots = cfg.getAutoLoadBots();
         if (bots.isEmpty()) src.sendSystemMessage(Component.translatableWithFallback(
-                "carpetbotmanager.command.autoload.list.no_bots", "No bots."));
+                "carpetbotmanager.command.autoload.list.no_bots", "自动加载列表中没有 bot。"));
         else { src.sendSystemMessage(Component.translatableWithFallback(
-                "carpetbotmanager.command.autoload.list.bots_title", "Auto-load Bots:"));
+                "carpetbotmanager.command.autoload.list.bots_title", "自动加载 Bot："));
             for (String b : bots) src.sendSystemMessage(Component.literal("  - " + b)); }
         java.util.List<String> groups = cfg.getAutoLoadGroups();
         if (groups.isEmpty()) src.sendSystemMessage(Component.translatableWithFallback(
-                "carpetbotmanager.command.autoload.list.no_groups", "No groups."));
+                "carpetbotmanager.command.autoload.list.no_groups", "自动加载列表中没有组。"));
         else { src.sendSystemMessage(Component.translatableWithFallback(
-                "carpetbotmanager.command.autoload.list.groups_title", "Auto-load Groups:"));
+                "carpetbotmanager.command.autoload.list.groups_title", "自动加载组："));
             for (String g : groups) src.sendSystemMessage(Component.literal("  - " + g)); }
         return 1;
     }
@@ -64,7 +64,7 @@ public final class AutoLoadHandlers {
         if (cfg.getAutoLoadGroups().contains(name)) throw GROUP_ALREADY_IN_AUTOLOAD.create();
         cfg.getAutoLoadGroups().add(name); cfg.save();
         src.sendSystemMessage(Component.translatableWithFallback(
-                "carpetbotmanager.command.group.autoload.add.success", "Group '%s' added to auto-load.", name));
+                "carpetbotmanager.command.group.autoload.add.success", "已将组 '%s' 添加到自动加载列表。", name));
         return 1;
     }
 
@@ -75,7 +75,7 @@ public final class AutoLoadHandlers {
         if (!cfg.getAutoLoadGroups().remove(name)) throw GROUP_NOT_IN_AUTOLOAD.create();
         cfg.save();
         src.sendSystemMessage(Component.translatableWithFallback(
-                "carpetbotmanager.command.group.autoload.remove.success", "Group '%s' removed from auto-load.", name));
+                "carpetbotmanager.command.group.autoload.remove.success", "已将组 '%s' 从自动加载列表中移除。", name));
         return 1;
     }
 }

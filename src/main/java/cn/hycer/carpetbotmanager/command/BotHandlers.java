@@ -25,7 +25,7 @@ public final class BotHandlers {
     static int showHelp(CommandContext<CommandSourceStack> ctx) {
         CommandSourceStack src = ctx.getSource();
         src.sendSystemMessage(Component.translatableWithFallback(
-                "carpetbotmanager.command.help.header", "=== /cbot Commands ==="));
+                "carpetbotmanager.command.help.header", "=== /cbot 指令用法 ==="));
         for (String line : new String[]{
                 "/cbot add <player> [description]",
                 "/cbot remove <name>", "/cbot load <name>",
@@ -65,7 +65,7 @@ public final class BotHandlers {
 
         dm.addBotPreset(preset);
         src.sendSystemMessage(Component.translatableWithFallback(
-                "carpetbotmanager.command.add.success", "Bot preset '%s' saved successfully.", botName));
+                "carpetbotmanager.command.add.success", "Bot 预设 '%s' 已保存。", botName));
         return 1;
     }
 
@@ -75,7 +75,7 @@ public final class BotHandlers {
         if (!BotDataManager.getInstance().hasBotPreset(name)) throw BOT_NOT_FOUND.create();
         BotDataManager.getInstance().removeBotPreset(name);
         src.sendSystemMessage(Component.translatableWithFallback(
-                "carpetbotmanager.command.remove.success", "Bot preset '%s' removed.", name));
+                "carpetbotmanager.command.remove.success", "Bot 预设 '%s' 已移除。", name));
         return 1;
     }
 
@@ -86,7 +86,7 @@ public final class BotHandlers {
                 .orElseThrow(BOT_NOT_FOUND::create);
         BotSpawner.spawn(src, preset);
         src.sendSystemMessage(Component.translatableWithFallback(
-                "carpetbotmanager.command.load.success", "Bot '%s' spawned successfully.", name));
+                "carpetbotmanager.command.load.success", "Bot '%s' 已召唤。", name));
         return 1;
     }
 
@@ -100,10 +100,10 @@ public final class BotHandlers {
         Collection<BotPreset> bots = dm.getAllBotPresets();
         if (bots.isEmpty()) {
             src.sendSystemMessage(Component.translatableWithFallback(
-                    "carpetbotmanager.command.list.no_bots", "No saved bot presets."));
+                    "carpetbotmanager.command.list.no_bots", "没有已保存的 bot 预设。"));
         } else {
             src.sendSystemMessage(Component.translatableWithFallback(
-                    "carpetbotmanager.command.list.bots_title", "Saved Bots:"));
+                    "carpetbotmanager.command.list.bots_title", "已保存的 Bot："));
             for (BotPreset b : bots) {
                 String d = b.getDescription() != null && !b.getDescription().isEmpty()
                         ? " - " + b.getDescription() : "";
@@ -116,10 +116,10 @@ public final class BotHandlers {
         Collection<BotGroup> groups = dm.getAllBotGroups();
         if (groups.isEmpty()) {
             src.sendSystemMessage(Component.translatableWithFallback(
-                    "carpetbotmanager.command.list.no_groups", "No saved bot groups."));
+                    "carpetbotmanager.command.list.no_groups", "没有已保存的 bot 组。"));
         } else {
             src.sendSystemMessage(Component.translatableWithFallback(
-                    "carpetbotmanager.command.list.groups_title", "Saved Groups:"));
+                    "carpetbotmanager.command.list.groups_title", "已保存的组："));
             for (BotGroup g : groups) {
                 String d = g.getDescription() != null && !g.getDescription().isEmpty()
                         ? " - " + g.getDescription() : "";

@@ -45,9 +45,9 @@ public final class GroupHandlers {
         if (v.isEmpty()) throw BOTS_NOT_FOUND_FOR_GROUP.create();
         dm.addBotGroup(new BotGroup(groupName, desc, v));
         src.sendSystemMessage(Component.translatableWithFallback(
-                "carpetbotmanager.command.group.add.success", "Group '%s' created with %d bot(s).", groupName, v.size()));
+                "carpetbotmanager.command.group.add.success", "组 '%s' 已创建，包含 %d 个 bot。", groupName, v.size()));
         if (!nf.isEmpty()) src.sendSystemMessage(Component.translatableWithFallback(
-                "carpetbotmanager.command.group.add.partial", "Warning: skipped: %s", String.join(", ", nf)));
+                "carpetbotmanager.command.group.add.partial", "警告：部分 bot 未找到，已跳过：%s", String.join(", ", nf)));
         return 1;
     }
 
@@ -57,7 +57,7 @@ public final class GroupHandlers {
         if (!BotDataManager.getInstance().hasBotGroup(name)) throw GROUP_NOT_FOUND.create();
         BotDataManager.getInstance().removeBotGroup(name);
         src.sendSystemMessage(Component.translatableWithFallback(
-                "carpetbotmanager.command.group.remove.success", "Group '%s' removed.", name));
+                "carpetbotmanager.command.group.remove.success", "组 '%s' 已移除。", name));
         return 1;
     }
 
@@ -71,13 +71,13 @@ public final class GroupHandlers {
             BotPreset p = dm.getBotPreset(bn).orElse(null);
             if (p != null) { try { BotSpawner.spawn(src, p); ok++; } catch (Exception e) { fail++;
                 src.sendSystemMessage(Component.translatableWithFallback(
-                        "carpetbotmanager.command.group.load.failed_item", "Failed: %s: %s", bn, e.getMessage())); }
+                        "carpetbotmanager.command.group.load.failed_item", "加载 bot '%s' 失败：%s", bn, e.getMessage())); }
             } else { fail++; src.sendSystemMessage(Component.translatableWithFallback(
-                    "carpetbotmanager.error.bot_not_found_item", "Bot '%s' not found.", bn)); }
+                    "carpetbotmanager.error.bot_not_found_item", "在保存的预设中未找到 bot '%s'。", bn)); }
         }
         final int finalOk = ok, finalFail = fail;
         src.sendSystemMessage(Component.translatableWithFallback(
-                "carpetbotmanager.command.group.load.success", "Group '%s': %d ok, %d fail.", name, finalOk, finalFail));
+                "carpetbotmanager.command.group.load.success", "组 '%s' 加载完成：%d 成功，%d 失败。", name, finalOk, finalFail));
         return 1;
     }
 }

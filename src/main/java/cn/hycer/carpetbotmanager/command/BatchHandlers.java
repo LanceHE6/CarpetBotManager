@@ -20,7 +20,7 @@ public final class BatchHandlers {
 
     private static final SimpleCommandExceptionType RANGE_INVALID =
             new SimpleCommandExceptionType(Component.translatableWithFallback(
-                    "carpetbotmanager.error.batch_range", "Start must be <= end."));
+                    "carpetbotmanager.error.batch_range", "起始值必须小于等于结束值。"));
 
     private BatchHandlers() {}
 
@@ -50,7 +50,7 @@ public final class BatchHandlers {
         int count = end - start + 1;
         src.sendSystemMessage(Component.translatableWithFallback(
                 "carpetbotmanager.command.batch.spawn.success",
-                "Spawned %d bots: %s_%d ~ %s_%d.", count, prefix, start, prefix, end));
+                "已召唤 %d 个 Bot：%s_%d ~ %s_%d。", count, prefix, start, prefix, end));
         return 1;
     }
 
@@ -72,7 +72,7 @@ public final class BatchHandlers {
         if (!missing.isEmpty()) {
             throw new SimpleCommandExceptionType(Component.translatableWithFallback(
                     "carpetbotmanager.error.batch_not_all_online",
-                    "All bots must be online. Missing: %s",
+                    "所有 Bot 必须在线。缺失: %s",
                     String.join(", ", missing))).create();
         }
 
@@ -97,7 +97,7 @@ public final class BatchHandlers {
         int count = names.size();
         src.sendSystemMessage(Component.translatableWithFallback(
                 "carpetbotmanager.command.batch.save.success",
-                "Saved %d bot presets to group '%s': %s_%d ~ %s_%d.",
+                "已将 %d 个 Bot 预设保存到分组 '%s'：%s_%d ~ %s_%d。",
                 count, prefix, prefix, start, prefix, end));
         return 1;
     }
