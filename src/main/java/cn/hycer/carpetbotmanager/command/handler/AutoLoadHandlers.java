@@ -1,4 +1,4 @@
-package cn.hycer.carpetbotmanager.command;
+package cn.hycer.carpetbotmanager.command.handler;
 
 import cn.hycer.carpetbotmanager.config.CarpetBotConfig;
 import cn.hycer.carpetbotmanager.data.BotDataManager;
@@ -13,7 +13,7 @@ public final class AutoLoadHandlers {
 
     private AutoLoadHandlers() {}
 
-    static int addAutoLoadBot(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
+    public static int addAutoLoadBot(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
         CommandSourceStack src = ctx.getSource();
         String name = StringArgumentType.getString(ctx, "name");
         if (!BotDataManager.getInstance().hasBotPreset(name)) throw BOT_NOT_FOUND.create();
@@ -25,7 +25,7 @@ public final class AutoLoadHandlers {
         return 1;
     }
 
-    static int removeAutoLoadBot(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
+    public static int removeAutoLoadBot(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
         CommandSourceStack src = ctx.getSource();
         String name = StringArgumentType.getString(ctx, "name");
         CarpetBotConfig cfg = CarpetBotConfig.getInstance();
@@ -36,7 +36,7 @@ public final class AutoLoadHandlers {
         return 1;
     }
 
-    static int listAutoLoad(CommandContext<CommandSourceStack> ctx) {
+    public static int listAutoLoad(CommandContext<CommandSourceStack> ctx) {
         CommandSourceStack src = ctx.getSource();
         CarpetBotConfig cfg = CarpetBotConfig.getInstance();
         src.sendSystemMessage(Component.translatableWithFallback(
@@ -56,7 +56,7 @@ public final class AutoLoadHandlers {
         return 1;
     }
 
-    static int addAutoLoadGroup(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
+    public static int addAutoLoadGroup(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
         CommandSourceStack src = ctx.getSource();
         String name = StringArgumentType.getString(ctx, "groupName");
         if (!BotDataManager.getInstance().hasBotGroup(name)) throw GROUP_NOT_FOUND.create();
@@ -68,7 +68,7 @@ public final class AutoLoadHandlers {
         return 1;
     }
 
-    static int removeAutoLoadGroup(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
+    public static int removeAutoLoadGroup(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
         CommandSourceStack src = ctx.getSource();
         String name = StringArgumentType.getString(ctx, "groupName");
         CarpetBotConfig cfg = CarpetBotConfig.getInstance();

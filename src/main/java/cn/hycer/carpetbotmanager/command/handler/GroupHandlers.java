@@ -1,5 +1,6 @@
-package cn.hycer.carpetbotmanager.command;
+package cn.hycer.carpetbotmanager.command.handler;
 
+import cn.hycer.carpetbotmanager.command.BotSpawner;
 import cn.hycer.carpetbotmanager.data.BotDataManager;
 import cn.hycer.carpetbotmanager.model.BotGroup;
 import cn.hycer.carpetbotmanager.model.BotPreset;
@@ -16,7 +17,7 @@ public final class GroupHandlers {
 
     private GroupHandlers() {}
 
-    static int addGroup(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
+    public static int addGroup(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
         CommandSourceStack src = ctx.getSource();
         String groupName = StringArgumentType.getString(ctx, "groupName");
         String desc = StringArgumentType.getString(ctx, "description");
@@ -51,7 +52,7 @@ public final class GroupHandlers {
         return 1;
     }
 
-    static int removeGroup(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
+    public static int removeGroup(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
         CommandSourceStack src = ctx.getSource();
         String name = StringArgumentType.getString(ctx, "groupName");
         if (!BotDataManager.getInstance().hasBotGroup(name)) throw GROUP_NOT_FOUND.create();
@@ -61,7 +62,7 @@ public final class GroupHandlers {
         return 1;
     }
 
-    static int loadGroup(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
+    public static int loadGroup(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
         CommandSourceStack src = ctx.getSource();
         String name = StringArgumentType.getString(ctx, "groupName");
         BotDataManager dm = BotDataManager.getInstance();

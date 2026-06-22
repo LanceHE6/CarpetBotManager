@@ -1,5 +1,6 @@
-package cn.hycer.carpetbotmanager.command;
+package cn.hycer.carpetbotmanager.command.handler;
 
+import cn.hycer.carpetbotmanager.command.BotSpawner;
 import cn.hycer.carpetbotmanager.config.CarpetBotConfig;
 import cn.hycer.carpetbotmanager.data.BotDataManager;
 import cn.hycer.carpetbotmanager.model.BotGroup;
@@ -22,7 +23,7 @@ public final class BotHandlers {
 
     private BotHandlers() {}
 
-    static int showHelp(CommandContext<CommandSourceStack> ctx) {
+    public static int showHelp(CommandContext<CommandSourceStack> ctx) {
         CommandSourceStack src = ctx.getSource();
         src.sendSystemMessage(Component.translatableWithFallback(
                 "carpetbotmanager.command.help.header", "=== /cbot 指令用法 ==="));
@@ -40,7 +41,7 @@ public final class BotHandlers {
         return 1;
     }
 
-    static int addBot(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
+    public static int addBot(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
         CommandSourceStack src = ctx.getSource();
         ServerPlayer player = EntityArgument.getPlayer(ctx, "player");
         String botName = player.getGameProfile().name();
@@ -69,7 +70,7 @@ public final class BotHandlers {
         return 1;
     }
 
-    static int removeBot(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
+    public static int removeBot(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
         CommandSourceStack src = ctx.getSource();
         String name = StringArgumentType.getString(ctx, "name");
         if (!BotDataManager.getInstance().hasBotPreset(name)) throw BOT_NOT_FOUND.create();
@@ -79,7 +80,7 @@ public final class BotHandlers {
         return 1;
     }
 
-    static int loadBot(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
+    public static int loadBot(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
         CommandSourceStack src = ctx.getSource();
         String name = StringArgumentType.getString(ctx, "name");
         BotPreset preset = BotDataManager.getInstance().getBotPreset(name)
@@ -90,7 +91,7 @@ public final class BotHandlers {
         return 1;
     }
 
-    static int listBots(CommandContext<CommandSourceStack> ctx) {
+    public static int listBots(CommandContext<CommandSourceStack> ctx) {
         CommandSourceStack src = ctx.getSource();
         BotDataManager dm = BotDataManager.getInstance();
 

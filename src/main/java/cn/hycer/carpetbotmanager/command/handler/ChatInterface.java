@@ -1,4 +1,4 @@
-package cn.hycer.carpetbotmanager.command;
+package cn.hycer.carpetbotmanager.command.handler;
 
 import cn.hycer.carpetbotmanager.config.CarpetBotConfig;
 import cn.hycer.carpetbotmanager.data.BotDataManager;
@@ -18,7 +18,7 @@ public final class ChatInterface {
         return Component.translatableWithFallback(key, fallback, args);
     }
 
-    static int showMainMenu(CommandContext<CommandSourceStack> ctx) {
+    public static int showMainMenu(CommandContext<CommandSourceStack> ctx) {
         CommandSourceStack src = ctx.getSource();
         src.sendSystemMessage(Component.literal(""));
         src.sendSystemMessage(title(Component.literal("CarpetBotManager")));
@@ -35,7 +35,7 @@ public final class ChatInterface {
         return 1;
     }
 
-    static int showBotList(CommandContext<CommandSourceStack> ctx) {
+    public static int showBotList(CommandContext<CommandSourceStack> ctx) {
         CommandSourceStack src = ctx.getSource();
         BotDataManager dm = BotDataManager.getInstance();
         src.sendSystemMessage(Component.literal(""));
@@ -55,7 +55,7 @@ public final class ChatInterface {
         return 1;
     }
 
-    static int showGroupList(CommandContext<CommandSourceStack> ctx) {
+    public static int showGroupList(CommandContext<CommandSourceStack> ctx) {
         CommandSourceStack src = ctx.getSource();
         BotDataManager dm = BotDataManager.getInstance();
         src.sendSystemMessage(Component.literal(""));
@@ -76,7 +76,7 @@ public final class ChatInterface {
         return 1;
     }
 
-    static int showAutoLoad(CommandContext<CommandSourceStack> ctx) {
+    public static int showAutoLoad(CommandContext<CommandSourceStack> ctx) {
         CommandSourceStack src = ctx.getSource();
         CarpetBotConfig cfg = CarpetBotConfig.getInstance();
         src.sendSystemMessage(Component.literal(""));
@@ -99,7 +99,7 @@ public final class ChatInterface {
         return 1;
     }
 
-    static int showAddHelp(CommandContext<CommandSourceStack> ctx) {
+    public static int showAddHelp(CommandContext<CommandSourceStack> ctx) {
         CommandSourceStack src = ctx.getSource();
         src.sendSystemMessage(Component.literal(""));
         src.sendSystemMessage(title(t("carpetbotmanager.ui.add_bot", "新增 Bot")));
@@ -111,7 +111,7 @@ public final class ChatInterface {
         return 1;
     }
 
-    static int showAutoLoadAddBot(CommandContext<CommandSourceStack> ctx, String name) {
+    public static int showAutoLoadAddBot(CommandContext<CommandSourceStack> ctx, String name) {
         CommandSourceStack src = ctx.getSource();
         src.sendSystemMessage(Component.literal(""));
         src.sendSystemMessage(t("carpetbotmanager.ui.confirm_autoload_bot", "  将 '%s' 加入自动加载？", name));
@@ -122,7 +122,7 @@ public final class ChatInterface {
         return 1;
     }
 
-    static int showAutoLoadAddGroup(CommandContext<CommandSourceStack> ctx, String name) {
+    public static int showAutoLoadAddGroup(CommandContext<CommandSourceStack> ctx, String name) {
         CommandSourceStack src = ctx.getSource();
         src.sendSystemMessage(Component.literal(""));
         src.sendSystemMessage(t("carpetbotmanager.ui.confirm_autoload_group", "  将分组 '%s' 加入自动加载？", name));

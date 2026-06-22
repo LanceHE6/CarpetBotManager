@@ -1,8 +1,9 @@
-package cn.hycer.carpetbotmanager.command;
+package cn.hycer.carpetbotmanager.command.handler;
 
 import cn.hycer.carpetbotmanager.data.BotDataManager;
 import cn.hycer.carpetbotmanager.model.BotGroup;
 import cn.hycer.carpetbotmanager.model.BotPreset;
+import com.mojang.brigadier.arguments.DoubleArgumentType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
@@ -24,9 +25,8 @@ public final class BatchHandlers {
 
     private BatchHandlers() {}
 
-    static int batchSpawn(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
+    public static int batchSpawn(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
         CommandSourceStack src = ctx.getSource();
-        ServerPlayer player = src.getPlayerOrException();
 
         String prefix = StringArgumentType.getString(ctx, "prefix");
         int start = IntegerArgumentType.getInteger(ctx, "start");
@@ -34,9 +34,31 @@ public final class BatchHandlers {
 
         if (start > end) throw RANGE_INVALID.create();
 
-        String dim = player.level().dimension().identifier().toString();
-        double x = player.getX(), y = player.getY(), z = player.getZ();
-        float yaw = player.getYRot(), pitch = player.getXRot();
+        // Optional: at <x> <y> <z> (defaults to player position)
+        double x, y, z;
+        float yaw, pitch;
+        try {
+            x = DoubleArgumentType.getDouble(ctx, "x");
+            y = DoubleArgumentType.getDouble(ctx, "y");
+            z = DoubleArgumentType.getDouble(ctx, "z");
+            yaw = 0; pitch = 0;
+        } catch (IllegalArgumentException e) {
+            ServerPlayer player = src.getPlayerOrException();
+            x = player.getX(); y = player.getY(); z = player.getZ();
+            yaw = player.getYRot(); pitch = player.getXRot();
+        }
+
+        // Optional: in <dimension> (defaults to player's dimension or overworld)
+        String dim;
+        try {
+            dim = StringArgumentType.getString(ctx, "dim");
+        } catch (IllegalArgumentException e) {
+            try {
+                dim = src.getPlayerOrException().level().dimension().identifier().toString();
+            } catch (CommandSyntaxException ex) {
+                dim = "minecraft:overworld";
+            }
+        }
 
         for (int i = start; i <= end; i++) {
             String name = prefix + "_" + i;
@@ -54,7 +76,7 @@ public final class BatchHandlers {
         return 1;
     }
 
-    static int batchSave(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
+    public static int batchSave(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
         CommandSourceStack src = ctx.getSource();
         String prefix = StringArgumentType.getString(ctx, "prefix");
         int start = IntegerArgumentType.getInteger(ctx, "start");
