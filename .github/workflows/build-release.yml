@@ -81,13 +81,7 @@ jobs:
       - name: 读取项目 Java 版本
         id: java_version
         run: |
-          JAVA_VER=$(grep -oP 'sourceCompatibility\s*=\s*JavaVersion\.VERSION_\K\d+' build.gradle)
-          if [ -z "$JAVA_VER" ]; then
-            JAVA_VER=$(grep -oP 'it\.options\.release\s*=\s*\K\d+' build.gradle)
-          fi
-          if [ -z "$JAVA_VER" ]; then
-            JAVA_VER=$(grep -oP 'def\s+targetJavaVersion\s*=\s*\K\d+' build.gradle)
-          fi
+          JAVA_VER=$(grep -oP 'sourceCompatibility\s*=\s*JavaVersion\.VERSION_\K\d+|it\.options\.release\s*=\s*\K\d+|def\s+targetJavaVersion\s*=\s*\K\d+' build.gradle | head -1 || true)
           echo "version=$JAVA_VER" >> $GITHUB_OUTPUT
           echo "检测到项目需要 JDK $JAVA_VER"
 
