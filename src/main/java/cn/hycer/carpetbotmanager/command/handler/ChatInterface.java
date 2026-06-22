@@ -1,4 +1,4 @@
-package cn.hycer.carpetbotmanager.command;
+package cn.hycer.carpetbotmanager.command.handler;
 
 import cn.hycer.carpetbotmanager.config.CarpetBotConfig;
 import cn.hycer.carpetbotmanager.data.BotDataManager;
@@ -7,7 +7,6 @@ import cn.hycer.carpetbotmanager.model.BotPreset;
 import com.mojang.brigadier.context.CommandContext;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.*;
-import java.util.Collection;
 
 public final class ChatInterface {
 
@@ -15,7 +14,7 @@ public final class ChatInterface {
 
     private ChatInterface() {}
 
-    static int showMainMenu(CommandContext<ServerCommandSource> ctx) {
+    public static int showMainMenu(CommandContext<ServerCommandSource> ctx) {
         ServerCommandSource src = ctx.getSource();
         src.sendFeedback(() -> Text.literal(""), false);
         src.sendFeedback(() -> title("CarpetBotManager"), false);
@@ -28,11 +27,13 @@ public final class ChatInterface {
         src.sendFeedback(() -> Text.literal("")
                 .append(btn(" [Add bot] ", CBOT + "ui add"))
                 .append(Text.literal("  "))
+                .append(btn(" [Batch ops] ", CBOT + "ui batch"))
+                .append(Text.literal("  "))
                 .append(btn(" [Help] ", CBOT + "help")), false);
         return 1;
     }
 
-    static int showBotList(CommandContext<ServerCommandSource> ctx) {
+    public static int showBotList(CommandContext<ServerCommandSource> ctx) {
         ServerCommandSource src = ctx.getSource();
         BotDataManager dm = BotDataManager.getInstance();
         src.sendFeedback(() -> Text.literal(""), false);
@@ -52,7 +53,7 @@ public final class ChatInterface {
         return 1;
     }
 
-    static int showGroupList(CommandContext<ServerCommandSource> ctx) {
+    public static int showGroupList(CommandContext<ServerCommandSource> ctx) {
         ServerCommandSource src = ctx.getSource();
         BotDataManager dm = BotDataManager.getInstance();
         src.sendFeedback(() -> Text.literal(""), false);
@@ -73,7 +74,7 @@ public final class ChatInterface {
         return 1;
     }
 
-    static int showAutoLoad(CommandContext<ServerCommandSource> ctx) {
+    public static int showAutoLoad(CommandContext<ServerCommandSource> ctx) {
         ServerCommandSource src = ctx.getSource();
         CarpetBotConfig cfg = CarpetBotConfig.getInstance();
         src.sendFeedback(() -> Text.literal(""), false);
@@ -92,7 +93,7 @@ public final class ChatInterface {
         return 1;
     }
 
-    static int showAddHelp(CommandContext<ServerCommandSource> ctx) {
+    public static int showAddHelp(CommandContext<ServerCommandSource> ctx) {
         ServerCommandSource src = ctx.getSource();
         src.sendFeedback(() -> Text.literal(""), false);
         src.sendFeedback(() -> title("Add Bot"), false);
@@ -104,7 +105,47 @@ public final class ChatInterface {
         return 1;
     }
 
-    static int showAutoLoadAddBot(CommandContext<ServerCommandSource> ctx, String name) {
+    public static int showBatchMenu(CommandContext<ServerCommandSource> ctx) {
+        ServerCommandSource src = ctx.getSource();
+        String pre = CBOT + "batch ";
+        src.sendFeedback(() -> Text.literal(""), false);
+        src.sendFeedback(() -> title("Batch Operations"), false);
+        src.sendFeedback(() -> Text.literal("  Usage: /cbot batch <prefix> <start> <end> <action>"), false);
+        src.sendFeedback(() -> Text.literal(""), false);
+
+        src.sendFeedback(() -> Text.literal("  > Spawn"), false);
+        src.sendFeedback(() -> Text.literal("    ")
+                .append(suggest("[Spawn]", pre + "<prefix> <start> <end> spawn"))
+                .append(Text.literal("  "))
+                .append(suggest("[Spawn at]", pre + "<prefix> <start> <end> spawn at ~ ~ ~")), false);
+
+        src.sendFeedback(() -> Text.literal("  > Manage"), false);
+        src.sendFeedback(() -> Text.literal("    ")
+                .append(suggest("[Save]", pre + "<prefix> <start> <end> save"))
+                .append(Text.literal("  "))
+                .append(suggest("[Kill]", pre + "<prefix> <start> <end> kill"))
+                .append(Text.literal("  "))
+                .append(suggest("[Sneak]", pre + "<prefix> <start> <end> sneak")), false);
+
+        src.sendFeedback(() -> Text.literal("  > Interact"), false);
+        src.sendFeedback(() -> Text.literal("    ")
+                .append(suggest("[Use]", pre + "<prefix> <start> <end> use"))
+                .append(Text.literal("  "))
+                .append(suggest("[Use cont.]", pre + "<prefix> <start> <end> use continuous"))
+                .append(Text.literal("  "))
+                .append(suggest("[Use int.]", pre + "<prefix> <start> <end> use interval <tick>")), false);
+        src.sendFeedback(() -> Text.literal("    ")
+                .append(suggest("[Attack]", pre + "<prefix> <start> <end> attack"))
+                .append(Text.literal("  "))
+                .append(suggest("[Attack cont.]", pre + "<prefix> <start> <end> attack continuous"))
+                .append(Text.literal("  "))
+                .append(suggest("[Attack int.]", pre + "<prefix> <start> <end> attack interval <tick>")), false);
+
+        src.sendFeedback(() -> Text.literal("").append(back()), false);
+        return 1;
+    }
+
+    public static int showAutoLoadAddBot(CommandContext<ServerCommandSource> ctx, String name) {
         ServerCommandSource src = ctx.getSource();
         src.sendFeedback(() -> Text.literal(""), false);
         src.sendFeedback(() -> Text.literal("  Add '" + name + "' to auto-load?"), false);
@@ -115,7 +156,7 @@ public final class ChatInterface {
         return 1;
     }
 
-    static int showAutoLoadAddGroup(CommandContext<ServerCommandSource> ctx, String name) {
+    public static int showAutoLoadAddGroup(CommandContext<ServerCommandSource> ctx, String name) {
         ServerCommandSource src = ctx.getSource();
         src.sendFeedback(() -> Text.literal(""), false);
         src.sendFeedback(() -> Text.literal("  Add group '" + name + "' to auto-load?"), false);
@@ -137,6 +178,14 @@ public final class ChatInterface {
                         .withClickEvent(new ClickEvent.RunCommand(cmd))
                         .withHoverEvent(new HoverEvent.ShowText(Text.literal(cmd)))
                         .withColor(TextColor.fromRgb(0x55FFFF)));
+    }
+
+    private static MutableText suggest(String label, String cmd) {
+        return Text.literal(label)
+                .styled(s -> s
+                        .withClickEvent(new ClickEvent.SuggestCommand(cmd))
+                        .withHoverEvent(new HoverEvent.ShowText(Text.literal(cmd)))
+                        .withColor(TextColor.fromRgb(0x55FF55)));
     }
 
     private static MutableText back() { return btn(" [Back] ", CBOT + "ui"); }

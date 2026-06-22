@@ -1,5 +1,6 @@
-package cn.hycer.carpetbotmanager.command;
+package cn.hycer.carpetbotmanager.command.handler;
 
+import cn.hycer.carpetbotmanager.command.BotSpawner;
 import cn.hycer.carpetbotmanager.config.CarpetBotConfig;
 import cn.hycer.carpetbotmanager.data.BotDataManager;
 import cn.hycer.carpetbotmanager.model.BotGroup;
@@ -22,7 +23,7 @@ public final class BotHandlers {
 
     private BotHandlers() {}
 
-    static int showHelp(CommandContext<ServerCommandSource> ctx) {
+    public static int showHelp(CommandContext<ServerCommandSource> ctx) {
         ServerCommandSource src = ctx.getSource();
         src.sendFeedback(() -> Text.translatableWithFallback(
                 "carpetbotmanager.command.help.header", "=== /cbot Commands ==="), false);
@@ -36,17 +37,24 @@ public final class BotHandlers {
                 "/cbot group remove <name>", "/cbot group load <name>",
                 "/cbot group autoload add <name>",
                 "/cbot group autoload remove <name>",
+                "/cbot batch <prefix> <start> <end> spawn [at <x> <y> <z>] [in <dim>]",
+                "/cbot batch <prefix> <start> <end> save",
+                "/cbot batch <prefix> <start> <end> kill",
+                "/cbot batch <prefix> <start> <end> use [continuous|interval <ticks>]",
+                "/cbot batch <prefix> <start> <end> attack [continuous|interval <ticks>]",
+                "/cbot batch <prefix> <start> <end> sneak",
         }) { src.sendFeedback(() -> Text.literal("  " + line), false); }
         return 1;
     }
 
-    static int addBot(CommandContext<ServerCommandSource> ctx) throws CommandSyntaxException {
+    public static int addBot(CommandContext<ServerCommandSource> ctx) throws CommandSyntaxException {
         ServerCommandSource src = ctx.getSource();
         ServerPlayerEntity player = EntityArgumentType.getPlayer(ctx, "player");
         String botName = player.getGameProfile().name();
         String prefix = CarpetBotConfig.getInstance().getBotNamePrefix();
 
-        if (!botName.toLowerCase(Locale.ROOT).startsWith(prefix.toLowerCase(Locale.ROOT)))
+        if (CarpetBotConfig.getInstance().isRequirePrefix()
+                && !botName.toLowerCase(Locale.ROOT).startsWith(prefix.toLowerCase(Locale.ROOT)))
             throw NOT_BOT_PREFIX.create();
 
         BotDataManager dm = BotDataManager.getInstance();
@@ -69,7 +77,7 @@ public final class BotHandlers {
         return 1;
     }
 
-    static int removeBot(CommandContext<ServerCommandSource> ctx) throws CommandSyntaxException {
+    public static int removeBot(CommandContext<ServerCommandSource> ctx) throws CommandSyntaxException {
         ServerCommandSource src = ctx.getSource();
         String name = StringArgumentType.getString(ctx, "name");
         if (!BotDataManager.getInstance().hasBotPreset(name)) throw BOT_NOT_FOUND.create();
@@ -79,7 +87,7 @@ public final class BotHandlers {
         return 1;
     }
 
-    static int loadBot(CommandContext<ServerCommandSource> ctx) throws CommandSyntaxException {
+    public static int loadBot(CommandContext<ServerCommandSource> ctx) throws CommandSyntaxException {
         ServerCommandSource src = ctx.getSource();
         String name = StringArgumentType.getString(ctx, "name");
         BotPreset preset = BotDataManager.getInstance().getBotPreset(name)
@@ -90,7 +98,7 @@ public final class BotHandlers {
         return 1;
     }
 
-    static int listBots(CommandContext<ServerCommandSource> ctx) {
+    public static int listBots(CommandContext<ServerCommandSource> ctx) {
         ServerCommandSource src = ctx.getSource();
         BotDataManager dm = BotDataManager.getInstance();
 
