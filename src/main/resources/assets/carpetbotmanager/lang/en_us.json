@@ -73,5 +73,7 @@
   "carpetbotmanager.error.batch_range": "Start must be <= end.",
   "carpetbotmanager.error.batch_not_all_online": "All bots must be online. Missing: %s",
   "carpetbotmanager.command.batch.spawn.success": "Spawned %d bots: %s_%d ~ %s_%d.",
-  "carpetbotmanager.command.batch.save.success": "Saved %d bot presets to group '%s': %s_%d ~ %s_%d."
+  "carpetbotmanager.command.batch.save.success": "Saved %d bot presets to group '%s': %s_%d ~ %s_%d.",
+  "carpetbotmanager.command.batch.action.success": "%s complete: %d/%d bots %s.",
+  "carpetbotmanager.command.batch.action.missing": "Note: %d bot(s) not online, skipped."
 }

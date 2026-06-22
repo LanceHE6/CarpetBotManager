@@ -63,7 +63,7 @@ public final class BatchHandlers {
         for (int i = start; i <= end; i++) {
             String name = prefix + "_" + i;
             String cmd = String.format(Locale.ROOT,
-                    "player %s spawn at %.2f %.2f %.2f facing %.2f %.2f in %s",
+                    "player %s spawn at %.2f %.2f %.2f facing %.2f %.2f in %s in survival",
                     name, x, y, z, yaw, pitch, dim);
             src.getServer().getCommands().performPrefixedCommand(
                     src.getServer().createCommandSourceStack(), cmd);
@@ -72,7 +72,8 @@ public final class BatchHandlers {
         int count = end - start + 1;
         src.sendSystemMessage(Component.translatableWithFallback(
                 "carpetbotmanager.command.batch.spawn.success",
-                "已召唤 %d 个 Bot：%s_%d ~ %s_%d。", count, prefix, start, prefix, end));
+                String.format("已召唤 %d 个 Bot：%s_%d ~ %s_%d。", count, prefix, start, prefix, end),
+                count, prefix, start, prefix, end));
         return 1;
     }
 
@@ -119,7 +120,8 @@ public final class BatchHandlers {
         int count = names.size();
         src.sendSystemMessage(Component.translatableWithFallback(
                 "carpetbotmanager.command.batch.save.success",
-                "已将 %d 个 Bot 预设保存到分组 '%s'：%s_%d ~ %s_%d。",
+                String.format("已将 %d 个 Bot 预设保存到分组 '%s'：%s_%d ~ %s_%d。",
+                        count, prefix, prefix, start, prefix, end),
                 count, prefix, prefix, start, prefix, end));
         return 1;
     }
@@ -150,10 +152,12 @@ public final class BatchHandlers {
         int count = end - start + 1;
         src.sendSystemMessage(Component.translatableWithFallback(
                 "carpetbotmanager.command.batch.action.success",
-                "%s完成：%d/%d 个 Bot %s。", desc, done, count, desc));
+                String.format("%s完成：%d/%d 个 Bot %s。", desc, done, count, desc),
+                desc, done, count, desc));
         if (miss > 0) src.sendSystemMessage(Component.translatableWithFallback(
                 "carpetbotmanager.command.batch.action.missing",
-                "注意：%d 个 Bot 不在线，已跳过。", miss));
+                String.format("注意：%d 个 Bot 不在线，已跳过。", miss),
+                miss));
         return 1;
     }
 

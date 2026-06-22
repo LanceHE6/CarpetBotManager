@@ -73,5 +73,7 @@
   "carpetbotmanager.error.batch_range": "起始值必须小于等于结束值。",
   "carpetbotmanager.error.batch_not_all_online": "所有 Bot 必须在线。缺失: %s",
   "carpetbotmanager.command.batch.spawn.success": "已召唤 %d 个 Bot：%s_%d ~ %s_%d。",
-  "carpetbotmanager.command.batch.save.success": "已将 %d 个 Bot 预设保存到分组 '%s'：%s_%d ~ %s_%d。"
+  "carpetbotmanager.command.batch.save.success": "已将 %d 个 Bot 预设保存到分组 '%s'：%s_%d ~ %s_%d。",
+  "carpetbotmanager.command.batch.action.success": "%s完成：%d/%d 个 Bot %s。",
+  "carpetbotmanager.command.batch.action.missing": "注意：%d 个 Bot 不在线，已跳过。"
 }
