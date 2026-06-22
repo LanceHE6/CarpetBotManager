@@ -123,4 +123,73 @@ public final class BatchHandlers {
                 count, prefix, prefix, start, prefix, end));
         return 1;
     }
+
+    // ---- batch action helpers ----
+
+    /** Parse prefix/start/end from context and run an action on each online bot. */
+    private static int runBatchAction(CommandContext<CommandSourceStack> ctx,
+                                      String playerAction, String desc) throws CommandSyntaxException {
+        CommandSourceStack src = ctx.getSource();
+        String prefix = StringArgumentType.getString(ctx, "prefix");
+        int start = IntegerArgumentType.getInteger(ctx, "start");
+        int end = IntegerArgumentType.getInteger(ctx, "end");
+
+        if (start > end) throw RANGE_INVALID.create();
+
+        int done = 0, miss = 0;
+        for (int i = start; i <= end; i++) {
+            String name = prefix + "_" + i;
+            if (src.getServer().getPlayerList().getPlayerByName(name) != null) {
+                String cmd = "player " + name + " " + playerAction;
+                src.getServer().getCommands().performPrefixedCommand(
+                        src.getServer().createCommandSourceStack(), cmd);
+                done++;
+            } else { miss++; }
+        }
+
+        int count = end - start + 1;
+        src.sendSystemMessage(Component.translatableWithFallback(
+                "carpetbotmanager.command.batch.action.success",
+                "%s完成：%d/%d 个 Bot %s。", desc, done, count, desc));
+        if (miss > 0) src.sendSystemMessage(Component.translatableWithFallback(
+                "carpetbotmanager.command.batch.action.missing",
+                "注意：%d 个 Bot 不在线，已跳过。", miss));
+        return 1;
+    }
+
+    // ---- batch actions ----
+
+    public static int batchKill(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
+        return runBatchAction(ctx, "kill", "下线");
+    }
+
+    public static int batchUse(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
+        return runBatchAction(ctx, "use once", "使用");
+    }
+
+    public static int batchUseContinuous(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
+        return runBatchAction(ctx, "use continuous", "持续使用");
+    }
+
+    public static int batchUseInterval(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
+        int ticks = IntegerArgumentType.getInteger(ctx, "ticks");
+        return runBatchAction(ctx, "use interval " + ticks, "间隔" + ticks + "tick使用");
+    }
+
+    public static int batchAttack(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
+        return runBatchAction(ctx, "attack once", "攻击");
+    }
+
+    public static int batchAttackContinuous(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
+        return runBatchAction(ctx, "attack continuous", "持续攻击");
+    }
+
+    public static int batchAttackInterval(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
+        int ticks = IntegerArgumentType.getInteger(ctx, "ticks");
+        return runBatchAction(ctx, "attack interval " + ticks, "间隔" + ticks + "tick攻击");
+    }
+
+    public static int batchSneak(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
+        return runBatchAction(ctx, "sneak", "潜行切换");
+    }
 }

@@ -31,6 +31,8 @@ public final class ChatInterface {
         src.sendSystemMessage(Component.literal("")
                 .append(btn(t("carpetbotmanager.ui.btn_add_bot", " [新增 Bot] "), CBOT + "ui add"))
                 .append(Component.literal("  "))
+                .append(btn(t("carpetbotmanager.ui.btn_batch", " [批量操作] "), CBOT + "ui batch"))
+                .append(Component.literal("  "))
                 .append(btn(t("carpetbotmanager.ui.btn_help", " [帮助] "), CBOT + "help")));
         return 1;
     }
@@ -111,6 +113,58 @@ public final class ChatInterface {
         return 1;
     }
 
+    public static int showBatchMenu(CommandContext<CommandSourceStack> ctx) {
+        CommandSourceStack src = ctx.getSource();
+        String pre = CBOT + "batch ";
+        src.sendSystemMessage(Component.literal(""));
+        src.sendSystemMessage(title(t("carpetbotmanager.ui.batch_menu", "批量操作")));
+        src.sendSystemMessage(t("carpetbotmanager.ui.batch_hint",
+                "  用法: /cbot batch <前缀> <起始> <结束> <动作>"));
+        src.sendSystemMessage(Component.literal(""));
+
+        src.sendSystemMessage(t("carpetbotmanager.ui.batch_spawn", "  ▸ 召唤"));
+        src.sendSystemMessage(Component.literal("    ")
+                .append(suggest(t("carpetbotmanager.ui.batch_btn_spawn", "[召唤]"),
+                        pre + "<前缀> <起始> <结束> spawn"))
+                .append(Component.literal("  "))
+                .append(suggest(t("carpetbotmanager.ui.batch_btn_spawn_at", "[召唤 at]"),
+                        pre + "<前缀> <起始> <结束> spawn at ~ ~ ~")));
+
+        src.sendSystemMessage(t("carpetbotmanager.ui.batch_manage", "  ▸ 管理"));
+        src.sendSystemMessage(Component.literal("    ")
+                .append(suggest(t("carpetbotmanager.ui.batch_btn_save", "[保存]"),
+                        pre + "<前缀> <起始> <结束> save"))
+                .append(Component.literal("  "))
+                .append(suggest(t("carpetbotmanager.ui.batch_btn_kill", "[下线]"),
+                        pre + "<前缀> <起始> <结束> kill"))
+                .append(Component.literal("  "))
+                .append(suggest(t("carpetbotmanager.ui.batch_btn_sneak", "[潜行]"),
+                        pre + "<前缀> <起始> <结束> sneak")));
+
+        src.sendSystemMessage(t("carpetbotmanager.ui.batch_interact", "  ▸ 交互"));
+        src.sendSystemMessage(Component.literal("    ")
+                .append(suggest(t("carpetbotmanager.ui.batch_btn_use", "[使用]"),
+                        pre + "<前缀> <起始> <结束> use"))
+                .append(Component.literal("  "))
+                .append(suggest(t("carpetbotmanager.ui.batch_btn_use_cont", "[持续使用]"),
+                        pre + "<前缀> <起始> <结束> use continuous"))
+                .append(Component.literal("  "))
+                .append(suggest(t("carpetbotmanager.ui.batch_btn_use_int", "[间隔使用]"),
+                        pre + "<前缀> <起始> <结束> use interval <tick>")));
+        src.sendSystemMessage(Component.literal("    ")
+                .append(suggest(t("carpetbotmanager.ui.batch_btn_attack", "[攻击]"),
+                        pre + "<前缀> <起始> <结束> attack"))
+                .append(Component.literal("  "))
+                .append(suggest(t("carpetbotmanager.ui.batch_btn_attack_cont", "[持续攻击]"),
+                        pre + "<前缀> <起始> <结束> attack continuous"))
+                .append(Component.literal("  "))
+                .append(suggest(t("carpetbotmanager.ui.batch_btn_attack_int", "[间隔攻击]"),
+                        pre + "<前缀> <起始> <结束> attack interval <tick>")));
+
+        src.sendSystemMessage(Component.literal("").append(back()));
+        return 1;
+    }
+
     public static int showAutoLoadAddBot(CommandContext<CommandSourceStack> ctx, String name) {
         CommandSourceStack src = ctx.getSource();
         src.sendSystemMessage(Component.literal(""));
@@ -144,6 +198,14 @@ public final class ChatInterface {
                         .withClickEvent(new ClickEvent.RunCommand(cmd))
                         .withHoverEvent(new HoverEvent.ShowText(Component.literal(cmd)))
                         .withColor(TextColor.fromRgb(0x55FFFF)));
+    }
+
+    private static MutableComponent suggest(MutableComponent label, String cmd) {
+        return label
+                .withStyle(s -> s
+                        .withClickEvent(new ClickEvent.SuggestCommand(cmd))
+                        .withHoverEvent(new HoverEvent.ShowText(Component.literal(cmd)))
+                        .withColor(TextColor.fromRgb(0x55FF55)));
     }
 
     private static MutableComponent back() {

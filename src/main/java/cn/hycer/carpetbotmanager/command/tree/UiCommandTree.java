@@ -33,6 +33,7 @@ public final class UiCommandTree {
                                         .suggests(GROUP_NAME_SUGGESTIONS)
                                         .executes(ctx -> ChatInterface.showAutoLoadAddGroup(
                                                 ctx, StringArgumentType.getString(ctx, "name")))))))
-                .then(literal("add").executes(ChatInterface::showAddHelp)));
+                .then(literal("add").executes(ChatInterface::showAddHelp))
+                .then(literal("batch").executes(ChatInterface::showBatchMenu)));
     }
 }

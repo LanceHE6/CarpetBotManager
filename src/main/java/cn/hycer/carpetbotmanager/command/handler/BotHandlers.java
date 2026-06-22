@@ -37,6 +37,12 @@ public final class BotHandlers {
                 "/cbot group remove <name>", "/cbot group load <name>",
                 "/cbot group autoload add <name>",
                 "/cbot group autoload remove <name>",
+                "/cbot batch <prefix> <start> <end> spawn [at <x> <y> <z>] [in <dim>]",
+                "/cbot batch <prefix> <start> <end> save",
+                "/cbot batch <prefix> <start> <end> kill",
+                "/cbot batch <prefix> <start> <end> use [continuous|interval <ticks>]",
+                "/cbot batch <prefix> <start> <end> attack [continuous|interval <ticks>]",
+                "/cbot batch <prefix> <start> <end> sneak",
         }) { src.sendSystemMessage(Component.literal("  " + line)); }
         return 1;
     }
@@ -47,7 +53,8 @@ public final class BotHandlers {
         String botName = player.getGameProfile().name();
         String prefix = CarpetBotConfig.getInstance().getBotNamePrefix();
 
-        if (!botName.toLowerCase(Locale.ROOT).startsWith(prefix.toLowerCase(Locale.ROOT)))
+        if (CarpetBotConfig.getInstance().isRequirePrefix()
+                && !botName.toLowerCase(Locale.ROOT).startsWith(prefix.toLowerCase(Locale.ROOT)))
             throw NOT_BOT_PREFIX.create();
 
         BotDataManager dm = BotDataManager.getInstance();

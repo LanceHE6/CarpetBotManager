@@ -11,7 +11,7 @@ import static net.minecraft.commands.Commands.argument;
 import static net.minecraft.commands.Commands.literal;
 
 /**
- * /cbot batch &lt;prefix&gt; &lt;start&gt; &lt;end&gt; [spawn ... | save] 子命令树。
+ * /cbot batch &lt;prefix&gt; &lt;start&gt; &lt;end&gt; [spawn|save|kill|use|attack|sneak] 子命令树。
  */
 public final class BatchCommandTree {
 
@@ -39,12 +39,36 @@ public final class BatchCommandTree {
                 .then(literal("at").then(spawnAt))
                 .then(spawnIn);
 
+        // use [continuous | interval <ticks>]
+        var useNode = literal("use")
+                .executes(BatchHandlers::batchUse)
+                .then(literal("continuous")
+                        .executes(BatchHandlers::batchUseContinuous))
+                .then(literal("interval")
+                        .then(argument("ticks", IntegerArgumentType.integer(1))
+                                .executes(BatchHandlers::batchUseInterval)));
+
+        // attack [continuous | interval <ticks>]
+        var attackNode = literal("attack")
+                .executes(BatchHandlers::batchAttack)
+                .then(literal("continuous")
+                        .executes(BatchHandlers::batchAttackContinuous))
+                .then(literal("interval")
+                        .then(argument("ticks", IntegerArgumentType.integer(1))
+                                .executes(BatchHandlers::batchAttackInterval)));
+
         return root.then(literal("batch")
                 .then(argument("prefix", StringArgumentType.word())
                         .then(argument("start", IntegerArgumentType.integer(1))
                                 .then(argument("end", IntegerArgumentType.integer(1))
                                         .then(spawnNode)
                                         .then(literal("save")
-                                                .executes(BatchHandlers::batchSave))))));
+                                                .executes(BatchHandlers::batchSave))
+                                        .then(literal("kill")
+                                                .executes(BatchHandlers::batchKill))
+                                        .then(useNode)
+                                        .then(attackNode)
+                                        .then(literal("sneak")
+                                                .executes(BatchHandlers::batchSneak))))));
     }
 }

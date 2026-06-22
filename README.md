@@ -201,6 +201,10 @@ CarpetBotManager/
 - [x] Bot 名称前缀校验（默认 `bot_`）
 - [x] 聊天交互界面（`/cbot` 可点击菜单）
 - [x] 国际化（中文 / 英文）
+- [x] 批量管理假人
+  - [x] 批量加载、退出
+  - [x] 批量执行动作（kill / use / attack / sneak）
+- [x] 批量操作聊天交互菜单（`/cbot ui batch`）
 - [ ] 支持更多 Carpet 假人参数（gamemode 等）
 - [ ] 热重载配置
 

@@ -24,6 +24,9 @@ public class CarpetBotConfig {
     @SerializedName("bot_name_prefix")
     private String botNamePrefix = "bot_";
 
+    @SerializedName("require_prefix")
+    private boolean requirePrefix = false;
+
     @SerializedName("auto_load_bots")
     private List<String> autoLoadBots = new ArrayList<>();
 
@@ -51,6 +54,14 @@ public class CarpetBotConfig {
 
     public void setBotNamePrefix(String botNamePrefix) {
         this.botNamePrefix = botNamePrefix;
+    }
+
+    public boolean isRequirePrefix() {
+        return requirePrefix;
+    }
+
+    public void setRequirePrefix(boolean requirePrefix) {
+        this.requirePrefix = requirePrefix;
     }
 
     public List<String> getAutoLoadBots() {
