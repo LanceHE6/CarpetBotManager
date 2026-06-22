@@ -85,6 +85,9 @@ jobs:
           if [ -z "$JAVA_VER" ]; then
             JAVA_VER=$(grep -oP 'it\.options\.release\s*=\s*\K\d+' build.gradle)
           fi
+          if [ -z "$JAVA_VER" ]; then
+            JAVA_VER=$(grep -oP 'def\s+targetJavaVersion\s*=\s*\K\d+' build.gradle)
+          fi
           echo "version=$JAVA_VER" >> $GITHUB_OUTPUT
           echo "检测到项目需要 JDK $JAVA_VER"
 
