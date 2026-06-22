@@ -29,7 +29,7 @@
 ```
   ==== CarpetBotManager ====
   [Bot list]  [Group list]  [Autoload]
-  [Add bot]  [Help]
+  [Add bot]  [Batch ops]  [Help]
 
   ==== Bot List ====
   bot_miner - 主世界挖矿机器人
@@ -50,7 +50,8 @@
 | 🚀 **一键召唤** | 通过 Carpet `/player spawn` 加载 Bot 到预设位置 |
 | 📦 **分组管理** | 多个 Bot 组织为 Group，支持批量加载 |
 | ⏰ **自动加载** | 通过指令设置开服自动部署 Bot / Group |
-| 🔧 **灵活配置** | 可配置权限等级、Bot 名称前缀 |
+| 🎯 **批量操作** | 批量召唤、保存、下线、潜行、使用、攻击（支持持续/间隔） |
+| 🔧 **灵活配置** | 可配置权限等级、Bot 名称前缀、是否强制前缀校验 |
 | 🌍 **多语言** | 内置英文（en_us）与中文（zh_cn）翻译 |
 
 ---
@@ -93,8 +94,16 @@
 ├── list                                # 查看所有 Bot 和 Group
 ├── help                                # 显示全部指令用法
 ├── ui                                  # 聊天交互菜单
-│   ├── bots / groups / autoload / add
+│   ├── bots / groups / autoload / add / batch
 │   └── autoload add/group add <name>
+│
+├── batch <prefix> <start> <end>
+│   ├── spawn [at <x> <y> <z>] [in <dim>]
+│   ├── save
+│   ├── kill
+│   ├── use [continuous | interval <ticks>]
+│   ├── attack [continuous | interval <ticks>]
+│   └── sneak
 │
 ├── autoload
 │   ├── add <name>                      # Bot 加入自动加载列表
@@ -120,6 +129,7 @@
 {
   "permission_level": 0,
   "bot_name_prefix": "bot_",
+  "require_prefix": false,
   "auto_load_bots": [],
   "auto_load_groups": []
 }
@@ -128,7 +138,8 @@
 | 配置项 | 类型 | 默认值 | 说明 |
 |--------|------|--------|------|
 | `permission_level` | int (0-4) | `0` | 执行指令所需最低权限等级 |
-| `bot_name_prefix` | string | `"bot_"` | Bot 名称必须以此前缀开头 |
+| `bot_name_prefix` | string | `"bot_"` | Bot 名称前缀 |
+| `require_prefix` | boolean | `false` | 添加 Bot 时是否强制校验名称前缀 |
 | `auto_load_bots` | list | `[]` | 开机自启的 Bot 名称列表 |
 | `auto_load_groups` | list | `[]` | 开机自启的 Group 名称列表 |
 
@@ -161,14 +172,22 @@ CarpetBotManager/
     ├── main/java/cn/hycer/carpetbotmanager/
     │   ├── Carpetbotmanager.java                 # 入口 — 注册指令 & 自动加载钩子
     │   ├── command/
-    │   │   ├── CarpetBotCommand.java             # 指令树注册（路由层）
-    │   │   ├── CommandExceptions.java            # 异常常量
-    │   │   ├── CommandSuggestions.java           # 补全建议提供器
-    │   │   ├── BotHandlers.java                  # Bot 增删查改 & help
-    │   │   ├── GroupHandlers.java                # 分组增删加载
-    │   │   ├── AutoLoadHandlers.java             # 自动加载管理
-    │   │   ├── BotSpawner.java                   # Carpet 假人召唤 & 启动自动加载
-    │   │   └── ChatInterface.java                # 聊天交互菜单
+    │   │   ├── CarpetBotCommand.java             # 指令注册入口
+    │   │   ├── CommandExceptions.java            # 异常常量（共享）
+    │   │   ├── CommandSuggestions.java           # 补全建议提供器（共享）
+    │   │   ├── BotSpawner.java                   # Carpet 假人召唤 & 启动自动加载（共享）
+    │   │   ├── tree/                             # 命令树定义
+    │   │   │   ├── BotCommandTree.java           #   add / remove / load / help / list
+    │   │   │   ├── BatchCommandTree.java         #   batch spawn/save/kill/use/attack/sneak
+    │   │   │   ├── UiCommandTree.java            #   ui 交互菜单路由
+    │   │   │   ├── AutoLoadCommandTree.java      #   autoload add/remove/list
+    │   │   │   └── GroupCommandTree.java         #   group add/remove/load/autoload
+    │   │   └── handler/                          # 命令执行器
+    │   │       ├── BotHandlers.java              #   Bot 增删查改 & help
+    │   │       ├── BatchHandlers.java            #   批量召唤/保存/动作
+    │   │       ├── GroupHandlers.java            #   分组增删加载
+    │   │       ├── AutoLoadHandlers.java         #   自动加载管理
+    │   │       └── ChatInterface.java            #   聊天交互菜单
     │   ├── config/
     │   │   └── CarpetBotConfig.java              # 配置文件读写 (JSON)
     │   ├── data/
