@@ -1,0 +1,104 @@
+package cn.hycer.carpetbotmanager.command;
+
+import cn.hycer.carpetbotmanager.data.BotDataManager;
+import cn.hycer.carpetbotmanager.model.BotGroup;
+import cn.hycer.carpetbotmanager.model.BotPreset;
+import com.mojang.brigadier.arguments.IntegerArgumentType;
+import com.mojang.brigadier.arguments.StringArgumentType;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+
+public final class BatchHandlers {
+
+    private static final SimpleCommandExceptionType RANGE_INVALID =
+            new SimpleCommandExceptionType(Component.translatableWithFallback(
+                    "carpetbotmanager.error.batch_range", "Start must be <= end."));
+
+    private BatchHandlers() {}
+
+    static int batchSpawn(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
+        CommandSourceStack src = ctx.getSource();
+        ServerPlayer player = src.getPlayerOrException();
+
+        String prefix = StringArgumentType.getString(ctx, "prefix");
+        int start = IntegerArgumentType.getInteger(ctx, "start");
+        int end = IntegerArgumentType.getInteger(ctx, "end");
+
+        if (start > end) throw RANGE_INVALID.create();
+
+        String dim = player.level().dimension().identifier().toString();
+        double x = player.getX(), y = player.getY(), z = player.getZ();
+        float yaw = player.getYRot(), pitch = player.getXRot();
+
+        for (int i = start; i <= end; i++) {
+            String name = prefix + "_" + i;
+            String cmd = String.format(Locale.ROOT,
+                    "player %s spawn at %.2f %.2f %.2f facing %.2f %.2f in %s",
+                    name, x, y, z, yaw, pitch, dim);
+            src.getServer().getCommands().performPrefixedCommand(
+                    src.getServer().createCommandSourceStack(), cmd);
+        }
+
+        int count = end - start + 1;
+        src.sendSystemMessage(Component.translatableWithFallback(
+                "carpetbotmanager.command.batch.spawn.success",
+                "Spawned %d bots: %s_%d ~ %s_%d.", count, prefix, start, prefix, end));
+        return 1;
+    }
+
+    static int batchSave(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
+        CommandSourceStack src = ctx.getSource();
+        String prefix = StringArgumentType.getString(ctx, "prefix");
+        int start = IntegerArgumentType.getInteger(ctx, "start");
+        int end = IntegerArgumentType.getInteger(ctx, "end");
+
+        if (start > end) throw RANGE_INVALID.create();
+
+        List<String> missing = new ArrayList<>();
+        for (int i = start; i <= end; i++) {
+            String name = prefix + "_" + i;
+            if (src.getServer().getPlayerList().getPlayerByName(name) == null) {
+                missing.add(name);
+            }
+        }
+        if (!missing.isEmpty()) {
+            throw new SimpleCommandExceptionType(Component.translatableWithFallback(
+                    "carpetbotmanager.error.batch_not_all_online",
+                    "All bots must be online. Missing: %s",
+                    String.join(", ", missing))).create();
+        }
+
+        // Save each bot's preset + collect names for group
+        BotDataManager dm = BotDataManager.getInstance();
+        List<String> names = new ArrayList<>();
+        for (int i = start; i <= end; i++) {
+            String name = prefix + "_" + i;
+            ServerPlayer bot = src.getServer().getPlayerList().getPlayerByName(name);
+            dm.addBotPreset(new BotPreset(
+                    name, "",
+                    bot.level().dimension().identifier().toString(),
+                    bot.getX(), bot.getY(), bot.getZ(),
+                    bot.getYRot(), bot.getXRot(),
+                    bot.getX(), bot.getEyeY(), bot.getZ()));
+            names.add(name);
+        }
+
+        // Create group: prefix as group name, contains all saved bot names
+        dm.addBotGroup(new BotGroup(prefix, "", names));
+
+        int count = names.size();
+        src.sendSystemMessage(Component.translatableWithFallback(
+                "carpetbotmanager.command.batch.save.success",
+                "Saved %d bot presets to group '%s': %s_%d ~ %s_%d.",
+                count, prefix, prefix, start, prefix, end));
+        return 1;
+    }
+}

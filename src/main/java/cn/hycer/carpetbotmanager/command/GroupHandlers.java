@@ -8,6 +8,7 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
 import java.util.*;
 import static cn.hycer.carpetbotmanager.command.CommandExceptions.*;
 
@@ -23,8 +24,24 @@ public final class GroupHandlers {
         BotDataManager dm = BotDataManager.getInstance();
         if (dm.hasBotGroup(groupName)) throw GROUP_ALREADY_EXISTS.create();
         List<String> v = new ArrayList<>(), nf = new ArrayList<>();
-        for (String n : botsStr.split("\\s+"))
-            if (dm.hasBotPreset(n)) v.add(n); else nf.add(n);
+        for (String n : botsStr.split("\\s+")) {
+            if (dm.hasBotPreset(n)) {
+                v.add(n);
+            } else {
+                // Try to auto-save from online player
+                ServerPlayer p = src.getServer().getPlayerList().getPlayerByName(n);
+                if (p != null) {
+                    dm.addBotPreset(new BotPreset(n, "",
+                            p.level().dimension().identifier().toString(),
+                            p.getX(), p.getY(), p.getZ(),
+                            p.getYRot(), p.getXRot(),
+                            p.getX(), p.getEyeY(), p.getZ()));
+                    v.add(n);
+                } else {
+                    nf.add(n);
+                }
+            }
+        }
         if (v.isEmpty()) throw BOTS_NOT_FOUND_FOR_GROUP.create();
         dm.addBotGroup(new BotGroup(groupName, desc, v));
         src.sendSystemMessage(Component.translatableWithFallback(

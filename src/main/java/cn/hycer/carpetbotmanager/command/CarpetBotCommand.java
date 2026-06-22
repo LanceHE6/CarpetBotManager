@@ -2,6 +2,7 @@ package cn.hycer.carpetbotmanager.command;
 
 import cn.hycer.carpetbotmanager.config.CarpetBotConfig;
 import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.minecraft.commands.arguments.EntityArgument;
@@ -52,6 +53,16 @@ public final class CarpetBotCommand {
                                 .executes(BotHandlers::loadBot)))
                 .then(literal("help").executes(BotHandlers::showHelp))
                 .then(literal("list").executes(BotHandlers::listBots))
+
+                // /cbot batch <prefix> <start> <end> <action>
+                .then(literal("batch")
+                        .then(argument("prefix", StringArgumentType.word())
+                                .then(argument("start", IntegerArgumentType.integer(1))
+                                        .then(argument("end", IntegerArgumentType.integer(1))
+                                                .then(literal("spawn")
+                                                        .executes(BatchHandlers::batchSpawn))
+                                                .then(literal("save")
+                                                        .executes(BatchHandlers::batchSave))))))
 
                 .then(literal("ui")
                         .executes(ChatInterface::showMainMenu)

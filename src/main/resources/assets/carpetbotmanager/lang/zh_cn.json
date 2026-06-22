@@ -68,5 +68,10 @@
   "carpetbotmanager.ui.add_tip2": "- 名称必须以 'bot_' 开头",
   "carpetbotmanager.ui.add_example": "示例: /cbot add bot_miner 挖矿机器人",
   "carpetbotmanager.ui.confirm_autoload_bot": "将 '%s' 加入自动加载？",
-  "carpetbotmanager.ui.confirm_autoload_group": "将分组 '%s' 加入自动加载？"
+  "carpetbotmanager.ui.confirm_autoload_group": "将分组 '%s' 加入自动加载？",
+
+  "carpetbotmanager.error.batch_range": "起始值必须小于等于结束值。",
+  "carpetbotmanager.error.batch_not_all_online": "所有 Bot 必须在线。缺失: %s",
+  "carpetbotmanager.command.batch.spawn.success": "已召唤 %d 个 Bot：%s_%d ~ %s_%d。",
+  "carpetbotmanager.command.batch.save.success": "已将 %d 个 Bot 预设保存到分组 '%s'：%s_%d ~ %s_%d。"
 }
