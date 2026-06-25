@@ -1,73 +1,108 @@
-plugins {
-    id 'net.fabricmc.fabric-loom' version "${loom_version}"
-    id 'maven-publish'
-}
-
-version = project.mod_version
-group = project.maven_group
-
-base {
-    archivesName = project.archives_base_name
-}
-
-loom {
-    splitEnvironmentSourceSets()
-
-    mods {
-        "carpetbotmanager" {
-            sourceSet sourceSets.main
-            sourceSet sourceSets.client
-        }
-    }
-}
-
-repositories {
-    maven {
-        url = 'https://maven.aliyun.com/repository/central'
-    }
-    mavenCentral()
-}
-
-dependencies {
-    minecraft "com.mojang:minecraft:${project.minecraft_version}"
-    implementation "net.fabricmc:fabric-loader:${project.loader_version}"
-    implementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
-}
-
-processResources {
-    inputs.property "version", project.version
-
-    filesMatching("fabric.mod.json") {
-        expand "version": project.version
-    }
-}
-
-tasks.withType(JavaCompile).configureEach {
-    it.options.release = 25
-    it.options.encoding = "UTF-8"
-}
-
-java {
-    withSourcesJar()
-    sourceCompatibility = JavaVersion.VERSION_25
-    targetCompatibility = JavaVersion.VERSION_25
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(25)
-    }
-}
-
-jar {
-    from("LICENSE") {
-        rename { "${it}_${project.archives_base_name}" }
-    }
-}
-
-publishing {
-    publications {
-        create("mavenJava", MavenPublication) {
-            from components.java
-        }
-    }
+buildscript {
     repositories {
+        maven { url = 'https://maven.fabricmc.net/' }
+        mavenCentral()
+    }
+    dependencies {
+        classpath "net.fabricmc:fabric-loom:1.17.12"
+    }
+}
+
+subprojects {
+    apply plugin: 'java'
+
+    version = rootProject.mod_version
+    group = rootProject.maven_group
+
+    // Extract MC version from subproject name: mc-26.2 -> 26.2
+    def mcVersion = project.name.replace('mc-', '')
+
+    base {
+        archivesName = "${rootProject.archives_base_name}-mc${mcVersion}"
+    }
+
+    repositories {
+        maven { url = 'https://maven.fabricmc.net/' }
+        maven { url = 'https://maven.aliyun.com/repository/central' }
+        mavenCentral()
+    }
+
+    sourceSets {
+        main {
+            java {
+                srcDir(rootProject.file('common/src/main/java'))
+                srcDir('src/main/java')
+            }
+            resources {
+                srcDir(rootProject.file('common/src/main/resources'))
+                srcDir('src/main/resources')
+            }
+        }
+    }
+
+    processResources {
+        duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+        inputs.property("version", project.version)
+        filesMatching("fabric.mod.json") {
+            expand("version": project.version)
+        }
+    }
+
+    java {
+        withSourcesJar()
+    }
+
+    tasks.withType(JavaCompile).configureEach {
+        it.options.encoding = "UTF-8"
+    }
+
+    jar {
+        duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+        from(rootProject.file('LICENSE.txt')) {
+            rename { "${it}_${project.archives_base_name}" }
+        }
+    }
+
+    tasks.named('sourcesJar', Jar) {
+        duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    }
+
+    tasks.named('jar', Jar) {
+        duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    }
+}
+
+// ---- 一键构建 & 收集到根目录 ----
+
+tasks.register('buildAll') {
+    group = 'build'
+    description = '构建所有子模块并将 JAR 收集到根目录'
+    subprojects.each { dependsOn "${it.name}:build" }
+    finalizedBy 'collectJars'
+}
+
+tasks.register('collectJars') {
+    group = 'build'
+    description = '将所有模块的 JAR 收集到 dist/ 目录'
+
+    doLast {
+        def distDir = rootProject.layout.projectDirectory.dir('dist').asFile
+        distDir.mkdirs()
+        subprojects.each { sub ->
+            fileTree("${sub.buildDir}/libs").matching {
+                include '*.jar'
+                exclude '*-sources.jar', '*-dev.jar'
+            }.each { jar ->
+                def mcVer = sub.name.replace('mc-', '')
+                def destName = "${rootProject.archives_base_name}-mc${mcVer}-${rootProject.mod_version}.jar"
+                copy {
+                    from jar
+                    into distDir
+                    rename { destName }
+                }
+                println "  ${sub.name}: ${jar.name} -> dist/${destName}"
+            }
+        }
+        println "所有 JAR 已收集到 dist/ 目录"
     }
 }

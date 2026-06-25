@@ -1,17 +1,27 @@
 pluginManagement {
     repositories {
-        maven {
-            name = 'Fabric'
-            url = 'https://maven.fabricmc.net/'
-        }
-        maven {
-            url = 'https://maven.aliyun.com/repository/central'
-        }
+        maven { url = 'https://maven.fabricmc.net/' }
+        maven { url = 'https://maven.aliyun.com/repository/central' }
         mavenCentral()
         gradlePluginPortal()
     }
 }
 
 plugins {
-    id 'org.gradle.toolchains.foojay-resolver-convention' version '1.0.0'
+    id('org.gradle.toolchains.foojay-resolver-convention') version('1.0.0')
 }
+
+rootProject.name = 'CarpetBotManager'
+
+include 'mc-26.2'
+include 'mc-26.1.2'
+// mc-26.1.1 and mc-26.1 temporarily disabled:
+// Fabric API has no releases for these versions yet.
+include 'mc-26.1.1'
+include 'mc-26.1'
+// mc-1.21.11 and mc-1.21.10 currently disabled:
+// their Fabric API versions require fabric-loom-remap (Yarn),
+// which conflicts with common/ Mojang-named source code.
+// TODO: re-enable with per-module source sets or loom source remapping.
+//include 'mc-1.21.11'
+//include 'mc-1.21.10'

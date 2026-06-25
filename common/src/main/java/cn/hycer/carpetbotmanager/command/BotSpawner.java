@@ -13,7 +13,7 @@ public final class BotSpawner {
 
     public static void spawn(CommandSourceStack src, BotPreset preset) {
         String cmd = String.format(Locale.ROOT,
-                "player %s spawn at %.2f %.2f %.2f facing %.2f %.2f in %s in survival",
+                "player %s spawn at %.2f %.2f %.2f facing %.2f %.2f in %s",
                 preset.getName(), preset.getX(), preset.getY(), preset.getZ(),
                 preset.getYaw(), preset.getPitch(), preset.getDimension());
         src.getServer().getCommands().performPrefixedCommand(

@@ -1,0 +1,48 @@
+buildscript {
+    repositories {
+        maven { url = 'https://maven.fabricmc.net/' }
+        mavenCentral()
+    }
+    dependencies {
+        classpath "net.fabricmc:fabric-loom:1.17.12"
+    }
+}
+
+apply plugin: 'net.fabricmc.fabric-loom'
+
+loom {
+    splitEnvironmentSourceSets()
+    mods {
+        "carpetbotmanager" {
+            sourceSet sourceSets.main
+            sourceSet sourceSets.client
+        }
+    }
+}
+
+sourceSets {
+    client {
+        java {
+            srcDir(rootProject.file('common/src/client/java'))
+        }
+        resources {
+            srcDir(rootProject.file('common/src/client/resources'))
+            srcDir('src/client/resources')
+        }
+    }
+}
+
+dependencies {
+    minecraft "com.mojang:minecraft:26.2"
+    implementation "net.fabricmc:fabric-loader:0.19.3"
+    implementation "net.fabricmc.fabric-api:fabric-api:0.152.1+26.2"
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_25
+    targetCompatibility = JavaVersion.VERSION_25
+}
+
+tasks.withType(JavaCompile).configureEach {
+    it.options.release = 25
+}

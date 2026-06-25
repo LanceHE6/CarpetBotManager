@@ -1,0 +1,26 @@
+buildscript {
+    repositories {
+        maven { url = 'https://maven.fabricmc.net/' }
+        mavenCentral()
+    }
+    dependencies {
+        classpath "net.fabricmc:fabric-loom:1.17.12"
+    }
+}
+
+apply plugin: 'net.fabricmc.fabric-loom'
+
+dependencies {
+    minecraft "com.mojang:minecraft:1.21.11"
+    implementation "net.fabricmc:fabric-loader:0.16.10"
+    implementation "net.fabricmc.fabric-api:fabric-api:0.141.4+1.21.11"
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
+}
+
+tasks.withType(JavaCompile).configureEach {
+    it.options.release = 21
+}
